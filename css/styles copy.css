@@ -1,0 +1,88 @@
+.clearme { clear:both; height:0; }
+
+body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/images/neurons_bg.jpg");background-repeat:repeat;}
+#container { width:791;background-color:#364f92;margin:0 auto; }
+#sidebar { width:196px;float:left; }
+#menu { color:white; font-family:'Verdana', Arial, Helvetica, sans-serif; }
+#menu ul { margin:0;padding:0; }
+#menu ul li { padding-left:29px;height:39px;border-bottom:1px solid white;line-height:39px;list-style-type:none; background-image:url("../img/list-item-menu.jpg"); background-repeat:no-repeat; background-position:center left;font-size:14px;}
+#menu a,
+#menu a:hover,
+#menu a:visited,
+#menu a:active { color:white;text-decoration:none; }
+#menu a:hover { text-decoration:underline; }
+#content { margin-left:196px;width:574px;background-color:white;padding:10px; }
+.admin_results { width:770px !important; position:relative; top:-32px; right:196px; overflow:auto; }
+
+#login h2 { display:inline; }
+
+#busy, .busy { visibility: hidden; }
+.error { border:1px solid red; }
+#survey { display:none; }
+#survey .error { color: red; border:none; }
+.tabs { display:none; }
+/*.section { border:1px solid orange; margin-bottom:20px; }*/
+
+h2 {color:#000066; }
+
+.section .heading { color:#000066;font-size:1.2em;text-transform:capitalize;line-height:30px;border-bottom:1px solid #666;width:100%;display:block; }
+.section .qline { padding:6px;margin:0;border-bottom:1px solid #999;width:98%;display:block; }
+.section .num { width:25px;text-align:right;margin-right:10px;display:inline-block; }
+.section .question { display:block;width:424px; }
+.section .radios { float:right;width:180px; }
+.section .radios input { margin:0 5px; }
+
+#content a{color:#000066;}
+
+.navi { padding:14px;text-align:center; }
+.navi .prev { float:left; }
+.navi .next,
+.navi #submit { float:right; }
+
+.msg_error {background-color:#fcc;border-top:1px #f00 solid;border-bottom:1px #f00 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_error ul {list-style-type:none;padding:0;margin:0;}
+.msg_error ul li {padding:3px;}
+
+.msg_success {background-color:#cfc;border-top:1px #0f0 solid;border-bottom:1px #0f0 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_success ul {list-style-type:none;padding:0;margin:0;}
+.msg_success ul li {padding:3px;}
+
+.msg_warning {background-color:#fca;border-top:1px #f93 solid;border-bottom:1px #f93 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_warning ul {list-style-type:none;padding:0;margin:0;}
+.msg_warning ul li {padding:3px;}
+
+.arrow { width:10px;height:11px;background-repeat:no-repeat;display:inline-block;margin-left:5px; }
+.up { background-image:url("../img/icon_up_sort_arrow.png"); }
+.down { background-image:url("../img/icon_down_sort_arrow.png"); }
+
+.results { font-size:0.9em; }
+.results .odd { background-color:#ececec; }
+.results td { padding:5px; }
+
+.back_btn{font-size:15px;color:white; font-family:'Verdana', Arial, Helvetica, sans-serif;text-align:center;margin-top:10px;}
+.back_btn a{color:#fff;text-decoration:none;}
+.back_btn a:hover{color:#fff;text-decoration:underline; }
+
+.guide { font-size: 1.2em; }
+.guide .term { background-image:url("../img/term_bg.jpg"); background-repeat:repeat-x; color: white; line-height:36px; padding-left:10px; margin-bottom:0; }
+.guide .term span { float:right; padding:0 14px; cursor:pointer; }
+.guide .term span.active { background-image:url("../img/term_active_bg.jpg"); background-repeat:repeat-x;  }
+.guide .term .arrow { background-image:url("../img/term_active_arrow.jpg"); background-repeat:no-repeat; background-position:top center; }
+.guide .def { display:none; font-size:0.8em; font-style:italic; height:35px; }
+.guide .def2 { display:block; font-size:0.8em; font-style:italic; height:10px; }
+.guide p.active { display:block; }
+
+.cond ul,
+#referral ul { padding:0; }
+.cond ul li,
+#referral ul li,
+.cond_res ul li,
+.pre_survey {list-style-type:none;margin:0;padding:3px;}
+.cond_type { font-weight:bold; font-style:italic; }
+.ans { display:none; }
+
+.cond_res ul { padding:0px; }
+.cond_res { border:1px solid #006; font-size:0.9em; width:500px; padding:0 10px 10px 10px; }
+.cond_res ul > li {  } /* margin-left:205px; */
+.cond_res .col2 { float:left; width:210px; }
+.cond_res .reset {  float:right; display:block; }

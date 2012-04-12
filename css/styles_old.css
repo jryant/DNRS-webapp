@@ -1,0 +1,55 @@
+body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/images/neurons_bg.jpg");background-repeat:repeat;}
+#container { width:791;background-color:#364f92;margin:0 auto; }
+#sidebar { width:196px;float:left; }
+#menu { color:white; }
+#menu ul { margin:0;padding:0; }
+#menu ul li { height:39px;border-bottom:1px solid white;line-height:39px;list-style-type:none;}
+#menu ul li:hover { background-color:#4595E7; }
+#menu a,
+#menu a:hover,
+#menu a:visited,
+#menu a:active { color:white;text-decoration:none; }
+#menu a:hover {  }
+#content { margin-left:196px;width:574px;background-color:white;padding:10px; }
+
+#login h2 { display:inline; }
+
+#busy, .busy { visibility: hidden; }
+.error { border:1px solid red; }
+#survey { display:none; }
+#survey .error { color: red; border:none; }
+.tabs { display:none; }
+/*.section { border:1px solid orange; margin-bottom:20px; }*/
+
+h2 { color:purple; }
+
+.section .heading { color:purple;font-size:1.2em;text-transform:capitalize;line-height:30px;border-bottom:1px solid #666;width:100%;display:block; }
+.section .qline { padding:6px;margin:0;border-bottom:1px solid #999;width:100%;display:block; }
+.section .num { width:25px;text-align:right;margin-right:10px;display:inline-block; }
+.section .question { display:block;width:424px; }
+.section .radios { float:right;width:170px; }
+.section .radios input { margin:0 5px; }
+
+.navi { padding:14px;text-align:center; }
+.navi .prev { float:left; }
+.navi .next { float:right; }
+
+.msg_error {background-color:#fcc;border-top:1px #f00 solid;border-bottom:1px #f00 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_error ul {list-style-type:none;padding:0;margin:0;}
+.msg_error ul li {padding:3px;}
+
+.msg_success {background-color:#cfc;border-top:1px #0f0 solid;border-bottom:1px #0f0 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_success ul {list-style-type:none;padding:0;margin:0;}
+.msg_success ul li {padding:3px;}
+
+.msg_warning {background-color:#fca;border-top:1px #f93 solid;border-bottom:1px #f93 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
+.msg_warning ul {list-style-type:none;padding:0;margin:0;}
+.msg_warning ul li {padding:3px;}
+
+.arrow { width:10px;height:11px;background-repeat:no-repeat;display:inline-block;margin-left:5px; }
+.up { background-image:url("../img/icon_up_sort_arrow.png"); }
+.down { background-image:url("../img/icon_down_sort_arrow.png"); }
+
+.results { font-size:0.9em; }
+.results .odd { background-color:#ececec; }
+.results td { padding:5px; }
