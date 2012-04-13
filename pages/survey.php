@@ -168,6 +168,7 @@ else{ // Display survey form
 
 	// echo "<div class=\"section\">"; // Begin new survey "page"
 	echo "<form action=\"index.php?p=survey&a=submit\" name=\"survey\" method=\"post\">";
+	
 		
 	if($first_survey){ //Display first survey questions
 		echo "<div class=\"section pre_survey p".$page."\">";
@@ -241,6 +242,9 @@ else{ // Display survey form
 	echo section_navi($page,$pagetot,true,false);
 	$page++;
 	echo "</div>\n";
+	
+	
+	
 	// echo "<div class=\"navi\"><span class=\"next\"><a href=\"#\">Next Page</a></button></div>"; // .navi
 	// echo "</div>"; // .section
 
@@ -260,8 +264,9 @@ else{ // Display survey form
 				}
 				echo "<div class=\"section p".$page."\">\n"; // Begin new survey "page"
 				showMessageBlock($page);
-				echo getScale();
-				echo "<span class=\"heading\">Section $heading</span>\n";
+				// echo getScale();
+				
+				sectionHeading($heading,$page);
 				$$head = true;
 			}	
 		}
@@ -271,13 +276,19 @@ else{ // Display survey form
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"
 			showMessageBlock($page);
-			echo getScale();
+			// sectionHeading($heading,$page);
+			// echo getScale();
 		}
 		echo "<div class=\"qline\" id=\"".$question[1]."\">\n";
 		echo "<span class=\"radios\">\n";
-		for($n=0;$n<5;$n++){
-			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\" value=\"$n\" />"; //validate=\"required:true\" class=\"required\"
-			echo ($n==4) ? "N/A" : "$n" ;
+		global $tooltips;
+		for($n=1;$n<=6;$n++){
+			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\" value=\"$n\"";
+			if ($n==6){	
+				echo " title=\"N/A - ".$tooltips[$n]."\" />";
+			} else {
+				echo " title=\"".$n." - ".$tooltips[$n]."\" />";
+			}
 		}
 		echo "</span>\n";
 		echo "<span class=\"question\">\n";

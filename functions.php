@@ -395,4 +395,23 @@ function getScale(){
 	return $output;
 }
 
+$tooltips = array(
+	1 => "Never",
+	2 => "Rarely",
+	3 => "Sometimes",
+	4 => "Often",
+	5 => "Always",
+	6 => "Not applicable"
+);
+
+function sectionHeading($heading,$page){
+	global $tooltips;
+	echo "<div class=\"guide\">\n<p class=\"term\">Section $heading";
+	for($n=6;$n>0;$n--){
+		echo ($n==6) ? "<span class=\"last\" title=\"".$tooltips[$n]."\">N/A</span>" : "<span title=\"".$tooltips[$n]."\">".$n."</span>" ;
+	}
+	echo "</p></div>";
+	echo "<script>console.log(".$page.");</script>";
+}
+
 ?>
