@@ -14,8 +14,8 @@ db_connect();
 /* Check that all fields were typed in */
 $error = FALSE;
 if(!$user || !$pass){
-	// die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=6\">");
-	echo "Please fill out both fields to proceed.";
+	die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=6\">");
+	// echo "Please fill out both fields to proceed.";
 	$error = TRUE;
 }
 /* Spruce up username, check length */
@@ -33,12 +33,12 @@ if (!$error){
 
 	/* Check error codes */
 	if($result == 1){
-		// die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=4\">");
-		echo "That username doesn't exist in our database.<br/>";
+		die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=4\">");
+		// echo "That username doesn't exist in our database.<br/>";
 	}
 	elseif($result == 2){
-		// die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=5\">");
-		echo "Incorrect password, please try again.<br/>";
+		die("<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=5\">");
+		// echo "Incorrect password, please try again.<br/>";
 	}
 	else {
 		/* Username and password correct, register session variables */
@@ -63,7 +63,7 @@ if (!$error){
 			$logged_in = checkLogin();
 			$query = "UPDATE users SET `last_login`='".date("Y-m-d")."' WHERE ID='{$_SESSION['uid']}'";
 			$result = mysql_query($query) or die("Error updating user table (on login)");
-			// echo ($logged_in) ? "<meta http-equiv=\"Refresh\" content=\"0;url=index.php\">" : "";
+			echo ($logged_in) ? "<meta http-equiv=\"Refresh\" content=\"0;url=index.php\">" : "";
 		}	
 	}
 }
@@ -79,7 +79,7 @@ if($logged_in){
 	// UID: <b>".$_SESSION['uid']."</b><br/>";
 	// var_dump($logged_in);
 	// echo "<br/><a href=index.php>Refresh</a>";
-	echo "1";
+	// echo "1";
 }
 
 // var_dump($logged_in);

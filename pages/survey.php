@@ -171,6 +171,7 @@ else{ // Display survey form
 		
 	if($first_survey){ //Display first survey questions
 		echo "<div class=\"section pre_survey p".$page."\">";
+		showMessageBlock($page);
 		echo "<span class=\"heading\">Initial Questions</span>";
 		
 		$cond = array(
@@ -209,6 +210,7 @@ else{ // Display survey form
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Newspaper\"> Newspaper</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Television\"> Television</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Radio\"> Radio</li>
+			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Radio\"> Planet Thrive</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" class=\"other\"> Other <input type=\"text\" name=\"referral_other\" value=\"\" disabled></li>
 		</ul>
 	</div>
@@ -219,14 +221,17 @@ else{ // Display survey form
 			<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
 			<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
 		</li>\n";
-		echo "<li>What date did you begin the program? <input type=\"date\" name=\"program_start_date\" id=\"program_start_date\" value=\"".date('Y-m-d')."\">
-		</li>
+		echo "<li>What date did you begin the program? ";
+		echo "<input type=\"text\" id=\"program_start_date\" value=\"".date('Y-m-d')."\">";
+		// <input type=\"date\" name=\"program_start_date\" id=\"program_start_date\" value=\"".date('Y-m-d')."\">
+		echo "</li>
 		</ul>";
 	}
 	else { // Display subsequent survey question
 		$result = mysql_query("SELECT * FROM questions WHERE QID='q1'");
 		$q1 = mysql_fetch_array($result);
 		echo "<div class=\"section follow_up p".$page."\">";
+		showMessageBlock($page);
 		echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
 		echo "<li id=\"practicing\">".$q1[2]."
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
@@ -254,6 +259,7 @@ else{ // Display survey form
 					$page++;					
 				}
 				echo "<div class=\"section p".$page."\">\n"; // Begin new survey "page"
+				showMessageBlock($page);
 				echo getScale();
 				echo "<span class=\"heading\">Section $heading</span>\n";
 				$$head = true;
@@ -264,6 +270,7 @@ else{ // Display survey form
 			echo section_navi($page,$pagetot,false,false);
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"
+			showMessageBlock($page);
 			echo getScale();
 		}
 		echo "<div class=\"qline\" id=\"".$question[1]."\">\n";

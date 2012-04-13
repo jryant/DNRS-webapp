@@ -1,7 +1,7 @@
 .clearme { clear:both; height:0; }
 
 body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/images/neurons_bg.jpg");background-repeat:repeat;}
-#container { width:791;background-color:#364f92;margin:0 auto; }
+#container { width:793px; background-color:#364f92;margin:0 auto; }
 #sidebar { width:196px;float:left; }
 #menu { color:white; font-family:'Verdana', Arial, Helvetica, sans-serif; }
 #menu ul { margin:0;padding:0; }
@@ -22,8 +22,9 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 
 #busy, .busy { visibility: hidden; }
 .error { border:1px solid red; }
-#survey { display:none; }
-#survey .error { color: red; border:none; }
+#survey,
+.hidden { display:none; }
+#survey .error { color: red; border:0; }
 .tabs { display:none; }
 /*.section { border:1px solid orange; margin-bottom:20px; }*/
 
@@ -36,12 +37,12 @@ h2 {color:#000066; }
 .section .radios { float:right;width:180px; }
 .section .radios input { margin:0 5px; }
 
-#content a{color:#000066;}
+#content a { color:#000066; }
 
 .navi { padding:14px;text-align:center; }
 .navi .prev { float:left; width:149px; }
 .navi .next,
-.navi #submit { float:right; }
+.navi #submit { float:right; border:none; }
 
 .msg_error {background-color:#fcc;border-top:1px #f00 solid;border-bottom:1px #f00 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
 .msg_error ul {list-style-type:none;padding:0;margin:0;}
@@ -83,6 +84,7 @@ h2 {color:#000066; }
 #referral ul li,
 .cond_res ul li,
 .pre_survey {list-style-type:none;margin:0;padding:3px;}
+.pre_survey li { padding:3px; }
 .cond_type { font-weight:bold; font-style:italic; }
 .ans { display:none; }
 

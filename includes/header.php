@@ -7,8 +7,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script src="lib/jquery.tools.min.js"></script>
 	<script src="lib/jquery.validate.min.js"></script>
+	<script src="lib/jquery-ui-1.8.18.custom.min.js"></script>
 	<link rel="stylesheet" href="css/styles.css" type="text/css">
-	<link rel="stylesheet" href="css/date.css" type="text/css">
+	<!-- <link rel="stylesheet" href="css/date.css" type="text/css"> -->
+	<link rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" type="text/css">
 	<?php /*
 		if(isset($page) && $page=="survey"){ ?>
 			<script>
@@ -50,8 +52,16 @@
 	
 	<script>	
 		$(document).ready(function(){
-			$("#program_start_date").dateinput({
-				format: 'yyyy-mm-dd'
+			// $("#program_start_date").dateinput({
+			// 	format: 'yyyy-mm-dd'
+			// });
+
+			$( "#program_start_date" ).datepicker({
+				showOn: "button",
+				buttonImage: "img/redmond/calendar.gif",
+				buttonImageOnly: true,
+				dateFormat: 'yy-mm-dd',
+				showOn: 'both'
 			});
 			
 			var wizard = $("#survey");
@@ -207,7 +217,7 @@
 			$(".cond_res input[type=checkbox]").change(function(){
 				var value = $(this).val();
 				var query = "<?php echo $_SERVER['QUERY_STRING']; ?>";
-				console.log(query);
+				// console.log(query);
 			});
 			
 			var api = $("ul.tabs", wizard).data("tabs");
@@ -221,7 +231,7 @@
 				// id_int++;
 				// var pid = "p"+id_int;
 				var pid = $(this).attr("id");
-				console.log("Section: "+pid);
+				// console.log("Section: "+pid);
 				var section = $("#survey ."+pid);
 				// var valres = $("#survey ."+id+" input").validate();
 				// console.log(valres);
@@ -249,11 +259,11 @@
 					$(inputs).each(function(index){
 						// console.log(inputs[index]);
 						if(!$("#"+inputs[index]+" .radios input:checked").val()){
-							console.log(inputs[index]+" is unchecked");
+							// console.log(inputs[index]+" is unchecked");
 							$("#"+inputs[index]).addClass("error");
 							error++;
 						} else {
-							console.log(inputs[index]+" CHECKED");
+							// console.log(inputs[index]+" CHECKED");
 							$("#"+inputs[index]).removeClass("error");
 						}
 					});
@@ -262,7 +272,8 @@
 						return false;
 					}
 					else {
-						console.log(error +" errors cannot continue");
+						$("#error_"+pid).css("display","block");
+						// console.log(error +" errors cannot continue");
 					}
 				} else {	
 					var section = $(this).parent().parent();
@@ -278,13 +289,15 @@
 						return false;
 					}
 					else {
-						console.log(error +" errors cannot continue");
+						$("#error_"+pid).css("display","block");
+						// console.log(error +" errors cannot continue");
 					}
 				}
 			});
 
 			// "previous tab" button
 			$(".prev", wizard).click(function() {
+				$(".msg_error").css("display","none");
 				api.prev();
 				return false;
 			});
@@ -295,11 +308,11 @@
 			var error = 0;
 			$(inputs).each(function(index){
 				if(!$("#"+inputs[index]+" input:checked").val()){
-					console.log("#"+inputs[index]+" is unchecked");
+					// console.log("#"+inputs[index]+" is unchecked");
 					$("#"+inputs[index]).addClass("error");
 					error++;
 				} else {
-					console.log("#"+inputs[index]+" CHECKED");
+					// console.log("#"+inputs[index]+" CHECKED");
 					$("#"+inputs[index]).removeClass("error");
 				}							
 			});
@@ -309,7 +322,7 @@
 		function checkInput(q){
 			var qname = q;
 			$("#"+qname).removeClass("error");
-			console.log(qname);
+			// console.log(qname);
 		}
 
 		// function checkBtns(p){
@@ -343,7 +356,7 @@
 			if(!pass){
 				$('#output').append("Please enter your password.<br/>");
 			}
-			console.log("user = "+user+" / pass = "+pass);
+			// console.log("user = "+user+" / pass = "+pass);
 			$('#busy').css("visibility", "visible");
 			// $('.buttonSubmit', this).attr('disabled', 'disabled');
 			$.ajax({
@@ -353,7 +366,7 @@
 				success: function(html){
 					if(html=="1"){
 						// window.location = "index.php";
-						console.log("Login success!");
+						// console.log("Login success!");
 						refresh();
 					}
 					else {
@@ -459,11 +472,11 @@
 			if(nameSeg==""){
 				msg = namePrint + " name cannot be blank.";
 				error = true;
-				console.log(namePrint + " = " + window["check"+namePrint]);
+				// console.log(namePrint + " = " + window["check"+namePrint]);
 			} else {
 				msg = "";
 				error = false;
-				console.log(namePrint + " = " + window["check"+namePrint]);
+				// console.log(namePrint + " = " + window["check"+namePrint]);
 			}
 			if (error){
 				$('.'+name+' input').addClass("error");
@@ -505,18 +518,18 @@
 		
 		function checkForm(){
 			// if(checks==5){
-			console.log("uname = " + checkUname + " / pass = " + checkPass + " / first = " + checkFirst + " / last = " + checkLast + " / email = " + checkEmail);
+			// console.log("uname = " + checkUname + " / pass = " + checkPass + " / first = " + checkFirst + " / last = " + checkLast + " / email = " + checkEmail);
 			if( checkUname && checkPass && checkFirst && checkLast && checkEmail
 				// ($('.username input').hasClass("error") || $('.username input').val()=="") ||
 				// ($('.password input').hasClass("error") || $('#pass2').val()=="") ||
 				// ($('.email input').hasClass("error") || $('.email input').val()=="")
 			){
 				$("#submit").attr("disabled", false);
-				console.log('form complete!');
+				// console.log('form complete!');
 				return true;
 			} else {
 				$("#submit").attr("disabled", true);
-				console.log('form incomplete');
+				// console.log('form incomplete');
 				return false;
 			}
 		}
@@ -527,7 +540,7 @@
 			var first_name = $('#firstname').val();
 			var last_name = $('#lastname').val();
 			var email = $('#email').val();
-			console.log("register me!");
+			// console.log("register me!");
 			$.ajax({
 				url: "ajax.php",
 				type: "POST",
@@ -538,7 +551,7 @@
 				+"&last_name="+last_name
 				+"&email="+email,
 				success: function(html){
-					console.log(html);
+					// console.log(html);
 				}
 			});
 		}
@@ -553,7 +566,7 @@
 					$("#output").append(html);
 				}
 			});
-			console.log(email);
+			// console.log(email);
 		}
 	</script>
 </head>

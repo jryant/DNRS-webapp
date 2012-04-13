@@ -16,7 +16,7 @@ function db_connect($server="localhost"){
 	$db = mysql_select_db(${$server}['db']) or die("Could not connect to MySQL database: ".mysql_error());
 	
 	// $db = $localhost['db'];
-	echo ($debug) ? "<script>console.log(\"DB $db connected!\")</script>" : "" ;
+	// echo ($debug) ? "<script>console.log(\"DB $db connected!\")</script>" : "" ;
 }
 
 function confirmUser($username, $password){
@@ -103,7 +103,8 @@ function displayLogin(){
 	<div id="login">
 		<span class="head"><h2>Login</h2> or <a href="index.php?p=register">Register</a></span>
 
-		<form onsubmit="submitLogin();return false;" name="login">
+		<!-- <form onsubmit="submitLogin();return false;" name="login"> -->
+		<form action="login.php" name="login" method="post">
 			<div class="form-item">
 				<p>Username</p>
 				<input type="text" class="user" name="user" maxlength="30" title="Username" value="test" />
@@ -140,7 +141,7 @@ function logout(){
 	if(!$logged_in){
 		// echo "<h1>Error!</h1>\n";
 		// echo "You are not currently logged in, logout failed. Back to <a href=\"index.php\">login page</a>.";
-		echo "<meta http-equiv=\"Refresh\" content=\"0;url=index.php\">"; // ?msg=1
+		echo "<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=1\">"; // ?msg=1
 	}
 	else{
 	   /* Kill session variables */
@@ -238,6 +239,10 @@ function displayMessages(){
 	else {
 		$msg = "";
 	}
+}
+
+function showMessageBlock($p){
+	echo "<div class=\"msg_error hidden\" id=\"error_p".$p."\"><ul><li>Please answer all questions on this page to continue.</li></ul></div>";	
 }
 
 function niceDate($date){
