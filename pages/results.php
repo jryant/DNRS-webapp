@@ -121,8 +121,9 @@ else { // Admin screen
 					$$head = true;
 				}	
 			}
+			$r = ($response[$question[1]]==6) ? "N/A" : $response[$question[1]] ;
 			echo "<p><span class=\"num\">".$q.".</span>";
-			echo "<span class=\"response\"> (".$response[$question[1]].")</span> ";
+			echo "<span class=\"response\"> (".$r.")</span> ";
 			echo $question[2];
 			echo "</p>";
 			$q++;

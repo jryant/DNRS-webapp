@@ -9,8 +9,8 @@ $firephp = FirePHP::getInstance(true);
  */
 function db_connect($server="localhost"){
 	global $debug;
-	// $localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"healthsurvey");
-	$localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
+	$localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"healthsurvey");
+	// $localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
 
 	$conn = mysql_connect(${$server}['hostname'],${$server}['user'],${$server}['pass']) or die("Could not connect to MySQL server: ".mysql_error());
 	$db = mysql_select_db(${$server}['db']) or die("Could not connect to MySQL database: ".mysql_error());
@@ -337,6 +337,17 @@ The DNRS Team<br/>
 This is an automatically-generated message. Please do not reply.";
 
 	return mail($email, $subject, $message, $headers);
+}
+
+function mailReport($message){
+	$subject = "Survey Reminder Log | DNRS Web App";
+	$headers = "From: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+	    "Reply-To: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+		"Bcc: " . $GLOBALS['EMAIL_BCC'] . "\r\n" .
+		"MIME-Version: 1.0 \r\n" .
+		"Content-Type: text/HTML; charset=utf-8\r\n" .
+	    "X-Mailer: PHP/" . phpversion();
+	return mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);	
 }
 
 function ekeyConf($id,$conf){

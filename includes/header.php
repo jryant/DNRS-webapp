@@ -267,6 +267,7 @@
 							$("#"+inputs[index]).removeClass("error");
 						}
 					});
+					// error = 0; // DEBUG
 					if(error==0){
 						api.next();
 						return false;

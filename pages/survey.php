@@ -69,7 +69,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	/* UPDATE RESPONSES TABLE */	
 	$query = "INSERT INTO responses "; //(uid,date";
 	
-	$num_q = array("a"=>"48","b"=>"23","c"=>"28","d"=>"30");
+	$num_q = array("a"=>"26","b"=>"15","c"=>"13","d"=>"19");
 	foreach($num_q as $key => $value){
 		for($i=0;$i<$value;$i++){
 			if($i<10){
@@ -105,7 +105,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	$date = $response['date']; // surveyed date
 	$sid = $response['ID']; // responses ID
 
-	$sections = array("a" => 196, "b" => 96, "c" => 116, "d" => 124);
+	$sections = array("a" => 156, "b" => 90, "c" => 78, "d" => 114);
 	// print_r($sections);
 	foreach($sections as $section => $max){
 		$total[$section] = 0;
@@ -116,7 +116,8 @@ if(isset($_GET['a'])){ // Process survey responce
 			}
 		}
 		// echo "<br/>";
-		$score[$section] = $max - $total[$section];
+		// $score[$section] = $max - $total[$section]; // old method
+		$score[$section] = $total[$section]; // new method
 		$perc[$section] = round($score[$section] / $max, 2)*100;
 		// echo "Section ".$section.": Total (".$total[$section].") Max (".$max.") Score (".$score[$section].") Percentage (".$perc[$section]."%)<br/>";
 	}
@@ -127,7 +128,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	
 	/* FINISHED UPDATING TABLES */
 	if($result){
-		echo "Thank you for your survey";
+		echo "Thank you for your survey!";
 	}
 	// var_dump($result);
 }
@@ -136,6 +137,7 @@ if(isset($_GET['a'])){ // Process survey responce
 
 
 else{ // Display survey form
+	$qPerPage = 8;
 	echo "<div id=\"survey\">";
 	$result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSION['uid']}'"));
 	if($result['last_survey']){
@@ -157,7 +159,7 @@ else{ // Display survey form
 	
 	$result = mysql_query("SELECT * FROM questions WHERE QID!='q1'");
 	$page = 1;
-	$pagetot = floor(mysql_num_rows($result)/10+1);
+	$pagetot = floor(mysql_num_rows($result)/$qPerPage+1);
 		
 	echo "<ul class=\"tabs\">";
 	$pagetot++;
@@ -233,11 +235,12 @@ else{ // Display survey form
 		$q1 = mysql_fetch_array($result);
 		echo "<div class=\"section follow_up p".$page."\">";
 		showMessageBlock($page);
-		echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
-		echo "<li id=\"practicing\">".$q1[2]."
+		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
+		// echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
+		echo "<p id=\"practicing\">".$q1[2]."
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
-		</li>";
+		</p>";
 	}
 	echo section_navi($page,$pagetot,true,false);
 	$page++;
@@ -271,7 +274,7 @@ else{ // Display survey form
 			}	
 		}
 		// Display each question
-		if($q%11==0){
+		if($q%($qPerPage+1)==0){ // Determines number of questions (+1) per "page"
 			echo section_navi($page,$pagetot,false,false);
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"
