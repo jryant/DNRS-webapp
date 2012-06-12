@@ -2,6 +2,8 @@
 
 <?php
 
+$headings = array("a","b","c","d");
+
 if(isset($_GET['a'])){ // Process survey responce
 	$responce = $_POST;
 	$date = $responce['date'];
@@ -64,12 +66,12 @@ if(isset($_GET['a'])){ // Process survey responce
 	$query .= "`last_survey`='$date',`next_survey`='$next_survey'";
 	$query .= " WHERE ID='{$_SESSION['uid']}'";
 	// echo $query."<br/>";
-	$result = mysql_query($query) or die("Error updating user table");
+	$result = mysql_query($query) or die("Error updating user table: ".mysql_error());
 	
 	/* UPDATE RESPONSES TABLE */	
 	$query = "INSERT INTO responses "; //(uid,date";
 	
-	$num_q = array("a"=>"26","b"=>"15","c"=>"13","d"=>"19");
+	$num_q = array("a"=>"26","b"=>"15","c"=>"12","d"=>"19");
 	foreach($num_q as $key => $value){
 		for($i=0;$i<$value;$i++){
 			if($i<10){
@@ -90,8 +92,8 @@ if(isset($_GET['a'])){ // Process survey responce
 	$query .= (isset($q1)) ? ",'".$q1."'" : ",NULL" ;
 	$query .= ");";
 	
-	// echo $query."<br/>";
-	$result = mysql_query($query) or die("Error updating responses table: ").mysql_error();
+	// var_dump($query);
+	$result = mysql_query($query) or die("Error updating responses table: ".mysql_error());
 
 	/* UPDATE SUMMARY TABLE */
 	// $response_id = "0014";
@@ -104,9 +106,13 @@ if(isset($_GET['a'])){ // Process survey responce
 	$uid = $response['uid']; // user ID
 	$date = $response['date']; // surveyed date
 	$sid = $response['ID']; // responses ID
-
-	$sections = array("a" => 156, "b" => 90, "c" => 78, "d" => 114);
-	// print_r($sections);
+	
+	$sections = array();
+	foreach($headings as $h){
+		$sections[$h] = $num_q[$h] * 4;
+	}
+	
+	// $sections = array("a" => 156, "b" => 90, "c" => 78, "d" => 114); // nuke
 	foreach($sections as $section => $max){
 		$total[$section] = 0;
 		foreach($response as $q => $a){
@@ -128,7 +134,8 @@ if(isset($_GET['a'])){ // Process survey responce
 	
 	/* FINISHED UPDATING TABLES */
 	if($result){
-		echo "Thank you for your survey!";
+		echo "<p>Thank you for taking the time to fill out the survey.<br/>Know that your efforts are assisting us in helping others.</p>\n
+		<p>Yours in Good Health,<br/>The DNRS Team</p>";
 	}
 	// var_dump($result);
 }
@@ -137,7 +144,7 @@ if(isset($_GET['a'])){ // Process survey responce
 
 
 else{ // Display survey form
-	$qPerPage = 8;
+	$qPerPage = 9;
 	echo "<div id=\"survey\">";
 	$result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSION['uid']}'"));
 	if($result['last_survey']){
@@ -145,11 +152,7 @@ else{ // Display survey form
 		// echo "<p>Next survey date: ".$result['next_survey']."</p>";
 	}
 
-	$headings = array("a","b","c","d");
-	foreach($headings as $heading){
-		$head = 'heading_'.$heading;
-		$$head = false;
-	}
+
 
 	$first_survey = false;
 	$result = mysql_query("SELECT `date` FROM responses WHERE uid='{$_SESSION['uid']}'");
@@ -203,7 +206,7 @@ else{ // Display survey form
 		echo "<div id=\"referral\">
 	<ul>
 		<li>How did you hear about the Dynamic Neural Retraining System? <span class=\"ans\"></span></li>
-			<li><inputt onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Internet search\"> Internet search</li>
+			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Internet search\"> Searching the internet</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Word of mouth\"> Word of mouth</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Online support group\"> Online support group</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Family doctor\"> Family doctor</li>
@@ -242,33 +245,37 @@ else{ // Display survey form
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
 		</p>";
 	}
+		
 	echo section_navi($page,$pagetot,true,false);
-	$page++;
 	echo "</div>\n";
+	$page++;	
+	// End pre-survey questions
 	
-	
-	
-	// echo "<div class=\"navi\"><span class=\"next\"><a href=\"#\">Next Page</a></button></div>"; // .navi
-	// echo "</div>"; // .section
-
 	$result = mysql_query("SELECT * FROM questions WHERE QID!='q1'");
 	// $page = 1;
 	// $pagetot = floor(mysql_num_rows($result)/11-1);
-	while($question = mysql_fetch_array($result)){
+	
+	foreach($headings as $heading){
+		$head = 'heading_'.$heading;
+		$$head = false;
+		// var_dump($$head);
+	}
+	
+	while($question = mysql_fetch_array($result)){ // Loop through db for questions	
+		
 		foreach($headings as $heading){ // Display section headings
+			$h = 0;
 			$head = 'heading_'.$heading;
 			if(strstr($question[1],$heading) && !$$head){
 				$q=1;
 				// var_dump($head);
-				if ($head!="heading_a"){
+				if ($head!="heading_a"){ // End the page for all subsequent sections
 					echo section_navi($page,$pagetot,false,false);
 					echo "</div>\n"; // .section
 					$page++;					
 				}
 				echo "<div class=\"section p".$page."\">\n"; // Begin new survey "page"
 				showMessageBlock($page);
-				// echo getScale();
-				
 				sectionHeading($heading,$page);
 				$$head = true;
 			}	
@@ -279,18 +286,19 @@ else{ // Display survey form
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"
 			showMessageBlock($page);
-			// sectionHeading($heading,$page);
+			sectionHeading("cont",$page);
 			// echo getScale();
 		}
 		echo "<div class=\"qline\" id=\"".$question[1]."\">\n";
 		echo "<span class=\"radios\">\n";
 		global $tooltips;
 		for($n=1;$n<=6;$n++){
-			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\" value=\"$n\"";
+			$v = $n-1;
+			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" />";
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\"/>";
 			} else {
-				echo " title=\"".$n." - ".$tooltips[$n]."\" />";
+				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}
 		}
 		echo "</span>\n";
@@ -300,7 +308,7 @@ else{ // Display survey form
 		echo "</div>\n";
 	
 		$q++;
-	}
+	} // End questions db loop
 	echo section_navi($page,$pagetot,false,true);
 	echo "</form>\n";
 	echo "</div>\n"; // .section

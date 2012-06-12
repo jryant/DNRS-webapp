@@ -43,6 +43,7 @@ h2 {color:#000066; }
 .navi .prev { float:left; width:149px; }
 .navi .next,
 .navi #submit { float:right; border:none; }
+.navi #submit { width:145px; height:33px; font-size:1.2em; border:2px solid #006;}
 
 .msg_error {background-color:#fcc;border-top:1px #f00 solid;border-bottom:1px #f00 solid;padding:6px 12px 6px 12px;margin:12px 0px;}
 .msg_error ul {list-style-type:none;padding:0;margin:0;}
@@ -69,7 +70,7 @@ h2 {color:#000066; }
 .back_btn a:hover{color:#fff;text-decoration:underline; }
 
 .guide { font-size: 1.2em; text-transform:capitalize; }
-.guide .term { background-image:url("../img/term_bg.jpg"); background-repeat:repeat-x; color: white; line-height:36px; padding-left:10px; margin-bottom:0; }
+.guide .term { background-image:url("../img/term_bg.jpg"); background-repeat:repeat-x; color: white; line-height:36px; padding-left:10px; margin-bottom:0; margin:0;}
 .guide .term span { float:right; padding:0 0 0 10px; width:15px; font-size:0.8em; cursor:pointer; }
 .guide .term span.last { margin-right:1em; padding:0 6px 0 0; }
 .guide .term span:hover { color:black; }
@@ -100,3 +101,6 @@ h2 {color:#000066; }
 .cond_res a { font-size:0.9em; float:right; }
 
 .reset { font-size:0.8em; font-weight:normal;}
+
+.legend { font-size:0.6em; padding-bottom:10px; }
+.legend span { margin-right:4px; letter-spacing:-1px; }

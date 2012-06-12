@@ -9,8 +9,8 @@ $firephp = FirePHP::getInstance(true);
  */
 function db_connect($server="localhost"){
 	global $debug;
-	$localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"healthsurvey");
-	// $localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
+	// $localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"healthsurvey");
+	$localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
 
 	$conn = mysql_connect(${$server}['hostname'],${$server}['user'],${$server}['pass']) or die("Could not connect to MySQL server: ".mysql_error());
 	$db = mysql_select_db(${$server}['db']) or die("Could not connect to MySQL database: ".mysql_error());
@@ -407,22 +407,33 @@ function getScale(){
 }
 
 $tooltips = array(
-	1 => "Never",
-	2 => "Rarely",
-	3 => "Sometimes",
-	4 => "Often",
-	5 => "Always",
-	6 => "Not applicable"
+	1 => "Never (0&#37;)",
+	2 => "Rarely (1&#37;-24&#37;)",
+	3 => "Sometimes (25&#37;-50&#37;)",
+	4 => "Often (51&#37;-75&#37;)",
+	5 => "Usually (76&#37;+)",
+	6 => "Not Applicable"
 );
 
 function sectionHeading($heading,$page){
 	global $tooltips;
-	echo "<div class=\"guide\">\n<p class=\"term\">Section $heading";
+	global $hsec;
+	if ($heading!="cont") {
+		$hsec = $heading;
+	}
+	$disp = ($heading=="cont") ? $hsec." (Continued)" : $hsec ;
+	echo "<div class=\"guide\">\n";
+	echo "<div class=\"legend\">\n";
+	for($n=1;$n<7;$n++){
+		echo ($n==6) ? "\t<span>N/A = ".$tooltips[$n]."</span>\n" : "\t<span>".$n." = ".$tooltips[$n]."</span>\n" ;
+	}	
+	echo "</div>";
+	echo "<p class=\"term\">Section $disp";
 	for($n=6;$n>0;$n--){
 		echo ($n==6) ? "<span class=\"last\" title=\"".$tooltips[$n]."\">N/A</span>" : "<span title=\"".$tooltips[$n]."\">".$n."</span>" ;
 	}
 	echo "</p></div>";
-	echo "<script>console.log(".$page.");</script>";
+	// echo "<script>console.log(".$page.");</script>";
 }
 
 ?>
