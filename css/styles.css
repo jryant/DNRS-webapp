@@ -28,7 +28,7 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 .tabs { display:none; }
 /*.section { border:1px solid orange; margin-bottom:20px; }*/
 
-h2 {color:#000066; }
+h2 {color:#000066; margin-bottom:0; }
 
 .section .heading { color:#000066;font-size:1.2em;text-transform:capitalize;line-height:30px;border-bottom:1px solid #666;width:100%;display:block; }
 .section .qline { padding:6px;margin:0;border-bottom:1px solid #999 !important;width:98%;display:block; }

@@ -423,11 +423,12 @@ function sectionHeading($heading,$page){
 	}
 	$disp = ($heading=="cont") ? $hsec." (Continued)" : $hsec ;
 	echo "<div class=\"guide\">\n";
-	echo "<div class=\"legend\">\n";
-	for($n=1;$n<7;$n++){
-		echo ($n==6) ? "\t<span>N/A = ".$tooltips[$n]."</span>\n" : "\t<span>".$n." = ".$tooltips[$n]."</span>\n" ;
-	}	
-	echo "</div>";
+	echo "<img src=\"img/legend.png\" width=\"564\" height=\"26\" alt=\"Scoring Legend\" />";
+	// echo "<div class=\"legend\">\n";
+	// for($n=1;$n<7;$n++){
+	// 	echo ($n==6) ? "\t<span>N/A = ".$tooltips[$n]."</span>\n" : "\t<span>".$n." = ".$tooltips[$n]."</span>\n" ;
+	// }	
+	// echo "</div>";
 	echo "<p class=\"term\">Section $disp";
 	for($n=6;$n>0;$n--){
 		echo ($n==6) ? "<span class=\"last\" title=\"".$tooltips[$n]."\">N/A</span>" : "<span title=\"".$tooltips[$n]."\">".$n."</span>" ;
