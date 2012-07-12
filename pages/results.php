@@ -198,6 +198,7 @@ else { // Admin screen
 		}
 		echo "</ul>";
 		echo "<input type=\"hidden\" name=\"p\" value=\"results\">";
+		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
 		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
 		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
 		echo (isset($pm_raw) && $pm_raw!="") ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
