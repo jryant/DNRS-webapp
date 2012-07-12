@@ -51,13 +51,15 @@ else { // Admin screen
 			case 'dvd':
 				$program_method = "DVD";
 				break;
-			case 'both':
-				$program_method = "Both";
-				break;
+			// case 'both':
 			default:
 				$program_method = "";
+				// break;
+			// default:
+			// 	$program_method = "";
 		}
 	}
+	$gender_raw = (isset($_GET['gender'])) ? mysql_real_escape_string($_GET['gender']) : "" ;
 	
 	$conds_name = array("Chemical Sensitivities", "Chronic Fatigue Syndrome", "Fibromyalgia", "Electric Hypersensitivity Syndrome", "Anxiety", "Food Sensitivities");
 	$conds_raw = array();
@@ -95,6 +97,11 @@ else { // Admin screen
 		echo "<h2>Survey Results &mdash; Detailed Results</h2>";
 		echo "<span class=\"heading\">User Information</span>";
 		echo "<p>Name: <span class=\"response\">".$user['first_name']." ".$user['last_name']."</span>";
+		echo "<br/>Gender: <span class=\"response\">".$user['gender']."</span>";
+		echo "<br/>Age at program start: <span class=\"response\">".$user['age']."</span>";
+		echo "<br/>Program start date: <span class=\"response\">".$user['program_start_date']."</span>";
+		echo "<br/>Program method: <span class=\"response\">".$user['program_method']."</span>";
+		echo "<br/>Date joined: <span class=\"response\">".$user['date_joined']."</span>";
 		echo "<br/>Survey date: <span class=\"response\">".$response['date']."</span>";
 
 		$q1q = mysql_fetch_array(mysql_query("SELECT question FROM questions WHERE QID='q1'"));
@@ -148,12 +155,34 @@ else { // Admin screen
 			$query .= " WHERE s.uid='".$uid."'";
 		}
 		else {
-			$query .= (isset($program_method) && $program_method!="") ? " WHERE (u.program_method='".$program_method."')" : "" ;
-			$query .= (!empty($conds_raw)) ? " AND (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")" : "" ;
+			$where = array();
+			if (isset($program_method) && $program_method!=""){
+				$where[] = " (u.program_method='".$program_method."')";
+			}
+			if (isset($gender_raw) && $gender_raw!=""){
+				$where[] = " (u.gender='".$gender_raw."')";
+			}
+			if (!empty($conds_raw)){
+				$where[] = " (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")";
+			}
+			// var_dump($where);
+			
+			if ((isset($program_method) && $program_method!="") || (isset($gender_raw) && $gender_raw!="") || (!empty($conds_raw))){
+				$query .= " WHERE ";
+				for($a = 0;$a < count($where);$a++){
+					$query .= ($a>0) ? " AND " : "" ;
+					$query .= $where[$a];
+				}
+			}
+
+			// $query .= (!empty($conds_raw)) ? " AND (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")" : "" ;
 		}
 		$query .= ($orderby) ? " ORDER BY s.$orderby $order" : "" ;
+
+		// echo "<hr/>"; var_dump($query);
 		
 		$result = mysql_query($query) or die(mysql_error());
+
 		// var_dump($pm_raw);
 		echo "<h2>Survey Results &mdash; Summmaries <span class=\"reset\">(<a href=\"index.php?p=results\">Reset All Filters</a>)</span></h2>";
 
@@ -178,9 +207,39 @@ else { // Admin screen
 		</div>";
 
 		echo "<table class=\"results\" cellspacing=\"0\" cellpadding=\"0\"><tr>";
-		echo "<td>Name</td>";
+		echo "<td class=\"name\">Name</td>";
+		echo "<td>Start Age</td>";
+		echo "<td>Gender
+		<br/><form action=\"index.php\" method=\"get\">
+			<select name=\"gender\" id=\"gender\" onchange=\"form.submit()\"";
+		echo ($uid) ? " disabled" : "" ;
+		echo ">
+				<option value=\"\"";
+		echo (!isset($gender_raw)) ? " selected" : "" ;
+		echo ">All</option>
+				<option value=\"m\"";
+		echo (isset($gender_raw) && $gender_raw=="m") ? " selected" : "" ;
+		echo ">Male</option>
+				<option value=\"f\"";
+		echo (isset($gender_raw) && $gender_raw=="f") ? " selected" : "" ;
+		echo ">Female</option>
+			<input type=\"hidden\" name=\"p\" value=\"results\">
+			";
+		echo ($pm_raw) ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
+		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
+		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		if(!empty($conds_raw)){
+			for($i=0; $i < count($conds_raw); $i++){
+				echo "<input type=\"hidden\" name=\"cond[]\" value=\"".$conds_raw[$i]."\">";
+			}
+		}
+		echo "</select>
+		</form></td>";
+		
+		echo "</td>";
+
 		echo "<td>Program Method
-		<br/>Limit to<form action=\"index.php\" method=\"get\">
+		<br/><form action=\"index.php\" method=\"get\">
 			<select name=\"program_method\" id=\"program_method\" onchange=\"form.submit()\"";
 		echo ($uid) ? " disabled" : "" ;
 		echo ">
@@ -192,12 +251,14 @@ else { // Admin screen
 		echo ">In Person</option>
 				<option value=\"dvd\"";
 		echo (isset($pm_raw) && $pm_raw=="dvd") ? " selected" : "" ;
-		echo ">DVD</option>
-				<option value=\"both\"";
-		echo (isset($pm_raw) && $pm_raw=="both") ? " selected" : "" ;
-		echo ">Both</option>
-			<input type=\"hidden\" name=\"p\" value=\"results\">
+		echo ">DVD</option>";
+				// <option value=\"both\"";
+		// echo (isset($pm_raw) && $pm_raw=="both") ? " selected" : "" ;
+		// echo ">Both</option>
+		echo "
+		<input type=\"hidden\" name=\"p\" value=\"results\">
 			";
+		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
 		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
 		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
 		if(!empty($conds_raw)){
@@ -211,6 +272,7 @@ else { // Admin screen
 		echo ($order=="ASC") ? "DESC" : "ASC" ;
 		echo ($uid) ? "&uid=".$uid : "" ;
 		echo (isset($pm_raw) && $pm_raw!="") ? "&program_method=".$pm_raw : "" ;
+		echo (isset($gender_raw) && $gender_raw!="") ? "&gender=".$gender_raw : "" ;
 		if(!empty($conds_raw)){
 			for($i=0; $i < count($conds_raw); $i++){
 				echo "&cond[]=".$conds_raw[$i];
@@ -226,10 +288,10 @@ else { // Admin screen
 		echo "<td>Condition #1</td>";
 		echo "<td>Condition #2</td>";
 		echo "<td>Condition #3</td>";
-		echo "<td>Section A</td>";
-		echo "<td>Section B</td>";
-		echo "<td>Section C</td>";
-		echo "<td>Section D</td>";
+		echo "<td>Sec A</td>";
+		echo "<td>Sec B</td>";
+		echo "<td>Sec C</td>";
+		echo "<td>Sec D</td>";
 		echo "<td></td>";
 		echo "</tr>";
 		// var_dump($result);
@@ -237,7 +299,7 @@ else { // Admin screen
 			
 		$n = 0;
 		if(!$result || (mysql_numrows($result) < 1)){
-			echo "<tr class=\"odd\"><td colspan=\"10\">No results</td></tr>";
+			echo "<tr class=\"odd\"><td class=\"numrows\" colspan=\"12\">No results</td></tr>";
 			// die(mysql_error());
 		}
 		while($summary = mysql_fetch_assoc($result)){
@@ -253,6 +315,8 @@ else { // Admin screen
 			echo ($orderby) ? "&orderby=".$orderby : "" ;
 			echo ($order) ? "&order=".$order : "" ;
 			echo "\">".$summary['first_name']." ".$summary['last_name']."</a></td>";
+			echo "<td>".$summary['age']."</td>";
+			echo "<td>".$summary['gender']."</td>";
 			echo "<td>".$summary['program_method']."</td>";
 			echo "<td>".$summary['date']."</td>";
 			echo "<td>".$summary['cond1']."</td>";
@@ -266,6 +330,10 @@ else { // Admin screen
 			echo "</tr>";
 	
 			// mysql_free_result($users);	
+		}
+		$results_plural = (mysql_num_rows($result)>1) ? "s" : "" ;
+		if (mysql_num_rows($result)!=0){
+			echo "<tr><td class=\"numrows\" colspan=\"12\">".mysql_num_rows($result)." result".$results_plural."</td></tr>";
 		}
 		echo "</table>";
 	}

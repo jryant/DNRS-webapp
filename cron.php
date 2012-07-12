@@ -13,7 +13,7 @@ $output .= "<h1>Survey Users</h1>";
 $output .= "<ol>";
 while($user = mysql_fetch_array($result)){
 	$output .= "<li>".$user['first_name']." ".$user['last_name']." - Reminder date: ".$user['next_survey']." (";
-	if ($user['next_survey'] && strtotime($user['next_survey']) <= strtotime($today)){
+	if ($user['next_survey'] && strtotime($user['next_survey']) == strtotime($today)){
 		$output .= (mailRemind($user['ID'],$user['first_name'],$user['email'])==1) ? "<b>Sent</b>" : "<b color=\"red\">ERROR!</b>";
 	} else {
 		$output .= "Not sent";

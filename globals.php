@@ -11,7 +11,7 @@ $firephp = FirePHP::getInstance(true);
 $GLOBALS['WEBSITE'] = "http://".$_SERVER['SERVER_NAME']."/";
 // $GLOBALS['WEBSITE'] = "http://localhost:8888/`BLC/dnrsystem.com/webapp/";
 
-$GLOBALS['EMAIL_SENDER'] = "jason@bluelotuscreative.com";
-$GLOBALS['EMAIL_BCC'] = "";
+$GLOBALS['EMAIL_SENDER'] = "no-reply@dnrsystem.com";
+$GLOBALS['EMAIL_BCC'] = "jason@bluelotuscreative.com";
 
 ?>

@@ -1,16 +1,17 @@
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 <head>
-    <meta charset="utf-8">
     <title>Health Survey | Dynamic Neural Retraining System&trade;</title>
-	<script src="includes/global.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="lib/jquery.tools.min.js"></script>
-	<script src="lib/jquery.validate.min.js"></script>
-	<script src="lib/jquery-ui-1.8.18.custom.min.js"></script>
-	<link rel="stylesheet" href="css/styles.css" type="text/css">
+	<script src="includes/global.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/jquery.validate.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/jquery-ui-1.8.18.custom.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/jquery.numeric.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="css/styles.css" type="text/css" charset="utf-8" />
 	<!-- <link rel="stylesheet" href="css/date.css" type="text/css"> -->
-	<link rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" type="text/css">
+	<link rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" type="text/css" charset="utf-8" />
 	<?php /*
 		if(isset($page) && $page=="survey"){ ?>
 			<script>
@@ -63,6 +64,8 @@
 				dateFormat: 'yy-mm-dd',
 				showOn: 'both'
 			});
+
+			$("#age").numeric();
 			
 			var wizard = $("#survey");
 			

@@ -6,8 +6,18 @@ $headings = array("a","b","c","d");
 
 if(isset($_GET['a'])){ // Process survey responce
 	$responce = $_POST;
+	
+	// var_dump($responce);
+	
 	$date = $responce['date'];
 	unset($responce['date']);
+	
+	$gender = $responce['gender'];
+	unset($responce['gender']);
+	
+	$age = $responce['age'];
+	unset($responce['age']);
+	
 	unset($responce['submit']);
 	
 	if(isset($responce['q1'])){
@@ -17,7 +27,7 @@ if(isset($_GET['a'])){ // Process survey responce
 
 	$cond = array();
 	for($n=1;$n<4;$n++){
-		$cond[$n] = "YES - ".$n;
+		$cond[$n] = "" ; //"YES - ".$n;
 		if (isset($responce['cond'.$n.'_other']) && $responce['cond'.$n.'_other']!=""){
 			$cond[$n] = (get_magic_quotes_gpc()) ? $responce['cond'.$n.'_other'] : addslashes($responce['cond'.$n.'_other']) ;
 			unset($responce['cond'.$n.'_other']);
@@ -48,13 +58,15 @@ if(isset($_GET['a'])){ // Process survey responce
 		$program_start_date = $responce['program_start_date'];
 		unset($responce['program_start_date']);
 	}
-	// print_r($responce);
+	print_r($responce);
 		
 	/* UPDATE USER TABLE */
 	$query = "UPDATE users SET ";	
 	if(isset($program_method) && isset($program_start_date)){
 		$query .= "`program_method`='$program_method'";
 		$query .= ",`program_start_date`='$program_start_date'";
+		$query .= ",`gender`='$gender'";
+		$query .= ",`age`='$age'";
 		$query .= ",`cond1`='".$cond[1]."'";
 		$query .= (isset($cond[2])) ? ",`cond2`='".$cond[2]."'" : ",`cond2`=NULL" ;
 		$query .= (isset($cond[3])) ? ",`cond3`='".$cond[3]."'" : ",`cond3`=NULL" ;
@@ -65,7 +77,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	// echo $next_survey;
 	$query .= "`last_survey`='$date',`next_survey`='$next_survey'";
 	$query .= " WHERE ID='{$_SESSION['uid']}'";
-	// echo $query."<br/>";
+	// echo "<hr/>".$query."<br/>";
 	$result = mysql_query($query) or die("Error updating user table: ".mysql_error());
 	
 	/* UPDATE RESPONSES TABLE */	
@@ -216,21 +228,23 @@ else{ // Display survey form
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Newspaper\"> Newspaper</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Television\"> Television</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Radio\"> Radio</li>
-			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Radio\"> Planet Thrive</li>
+			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" value=\"Planet Thrive\"> Planet Thrive</li>
 			<li><input onChange=\"checkInput('referral');\" type=\"radio\" name=\"referral\" class=\"other\"> Other <input type=\"text\" name=\"referral_other\" value=\"\" disabled></li>
 		</ul>
 	</div>
 	";
 		echo "<ul class=\"pre_survey\">
-		<li id=\"program_method\">In what format did you take the program?
-			<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" name=\"program_method\" value=\"In Person\" /> In Person
-			<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
-			<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
-		</li>\n";
-		echo "<li>What date did you begin the program? ";
-		echo "<input type=\"text\" id=\"program_start_date\" value=\"".date('Y-m-d')."\">";
-		// <input type=\"date\" name=\"program_start_date\" id=\"program_start_date\" value=\"".date('Y-m-d')."\">
-		echo "</li>
+			<li id=\"gender\">Please select your gender
+				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"M\" /> Male
+				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"F\" /> Female
+			</li>
+			<li id=\"age\">How old were you when you began the program? <input onChange=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
+			<li id=\"program_method\">In what format did you take the program?
+				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"In Person\" /> In Person
+				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
+				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
+			</li>
+			<li>What date did you begin the program? <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".date('Y-m-d')."\"></li>
 		</ul>";
 	}
 	else { // Display subsequent survey question
@@ -240,7 +254,8 @@ else{ // Display survey form
 		showMessageBlock($page);
 		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
 		// echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
-		echo "<p id=\"practicing\">".$q1[2]."
+		echo "<p>".$q1[2]."</p>
+		<p id=\"practicing\">
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
 		</p>";
@@ -296,7 +311,7 @@ else{ // Display survey form
 			$v = $n-1;
 			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\"/>";
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" checked />"; // debug
 			} else {
 				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}

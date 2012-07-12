@@ -13,7 +13,7 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 #menu a:hover { text-decoration:underline; }
 #content { margin-left:196px;width:574px;background-color:white;padding:10px; }
 
-.admin_results { width:770px !important; position:relative; top:-46px; right:196px; overflow:auto; }
+.admin_results { width:960px !important; position:relative; right:196px; }
 .admin_results .heading { color:#000066;font-size:1.2em;text-transform:capitalize;line-height:30px;border-bottom:1px solid #666;width:100%;display:block;margin-top:20px; }
 
 .response { font-weight:bold; }
@@ -64,6 +64,8 @@ h2 {color:#000066; margin-bottom:0; }
 .results { font-size:0.9em; }
 .results .odd { background-color:#ececec; }
 .results td { padding:5px; }
+.results .name { width:100px; }
+.results .numrows { text-align:center; }
 
 .back_btn{font-size:15px;color:white; font-family:'Verdana', Arial, Helvetica, sans-serif;text-align:center;margin-top:10px;}
 .back_btn a{color:#fff;text-decoration:none;}
@@ -104,3 +106,5 @@ h2 {color:#000066; margin-bottom:0; }
 
 .legend { font-size:0.6em; padding-bottom:10px; }
 .legend span { margin-right:4px; letter-spacing:-1px; }
+
+#practicing { text-align:right; }
