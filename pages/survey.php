@@ -238,7 +238,7 @@ else{ // Display survey form
 				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"M\" /> Male
 				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"F\" /> Female
 			</li>
-			<li id=\"age\">How old were you when you began the program? <input onChange=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
+			<li id=\"age\">How old were you when you began the program? <input onKeyDown=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
 			<li id=\"program_method\">In what format did you take the program?
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"In Person\" /> In Person
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
@@ -311,7 +311,7 @@ else{ // Display survey form
 			$v = $n-1;
 			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" checked />"; // debug
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" />";
 			} else {
 				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}

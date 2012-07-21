@@ -282,7 +282,7 @@
 				} else {	
 					var section = $(this).parent().parent();
 					if($(section).hasClass("pre_survey")){
-						var inputs = ["cond1","referral","program_method"];
+						var inputs = ["cond1","referral","program_method","gender","age"];
 					}
 					else if ($(section).hasClass("follow_up")){
 						var inputs = ["practicing"];
@@ -311,14 +311,26 @@
 		function validate(inputs){
 			var error = 0;
 			$(inputs).each(function(index){
-				if(!$("#"+inputs[index]+" input:checked").val()){
-					// console.log("#"+inputs[index]+" is unchecked");
-					$("#"+inputs[index]).addClass("error");
-					error++;
+				if(inputs[index]=="age"){
+					var age = $("#"+inputs[index]+" input").val();
+					console.log(age);
+					if(age<1 || age==""){
+						$("#"+inputs[index]).addClass("error");
+						error++;
+					} else {
+						// console.log("#"+inputs[index]+" CHECKED");
+						$("#"+inputs[index]).removeClass("error");
+					}												
 				} else {
-					// console.log("#"+inputs[index]+" CHECKED");
-					$("#"+inputs[index]).removeClass("error");
-				}							
+					if(!$("#"+inputs[index]+" input:checked").val()){
+						// console.log("#"+inputs[index]+" is unchecked");
+						$("#"+inputs[index]).addClass("error");
+						error++;
+					} else {
+						// console.log("#"+inputs[index]+" CHECKED");
+						$("#"+inputs[index]).removeClass("error");
+					}							
+				}
 			});
 			return error;
 		}
