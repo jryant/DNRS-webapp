@@ -58,7 +58,7 @@ if(isset($_GET['a'])){ // Process survey responce
 		$program_start_date = $responce['program_start_date'];
 		unset($responce['program_start_date']);
 	}
-	print_r($responce);
+	// print_r($responce);
 		
 	/* UPDATE USER TABLE */
 	$query = "UPDATE users SET ";	
@@ -239,7 +239,7 @@ else{ // Display survey form
 				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"F\" /> Female
 			</li>
 			<li id=\"age\">How old were you when you began the program? <input onKeyDown=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
-			<li id=\"program_method\">In what format did you take the program?
+			<li id=\"program_method\">In what format are you taking the program?
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"In Person\" /> In Person
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both

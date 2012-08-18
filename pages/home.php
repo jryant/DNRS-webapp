@@ -8,9 +8,9 @@ echo "<p>Welcome to the DNRS On-line Health and Wellness Survey. We have designe
 
 <p>This data is also important for compiling research information and we deeply appreciate your input.</p>
 
-<p>To accurately track your progress we require a precise baseline of your starting point. If you have been training for more than one month already, please fill out this initial survey while keeping in mind your state BEFORE you started the DNRS Program. Please indicate the month and year of your start date.</p>
+<p>Please indicate the month and year of your start date.</p>
 
- <p>You will be sent a reminder to fill out the survey once a month during your six month retraining period. If you are already past your six month retraining period then we will simply send you one follow up survey so that we can track your journey of recovery. Thank you and we look forward to assisting you in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!</p>
+<p>You will be sent a reminder to fill out the survey once a month during your six month retraining period. Thank you and we look forward to assisting you in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!</p>
 
 <p>Yours in Good Health,<br/>The DNRS Team";
 

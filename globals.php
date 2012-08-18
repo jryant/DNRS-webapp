@@ -8,7 +8,7 @@ require_once('lib/FirePHPCore/FirePHP.class.php');
 ob_start();
 $firephp = FirePHP::getInstance(true);
 
-$GLOBALS['WEBSITE'] = "http://".$_SERVER['SERVER_NAME']."/";
+$GLOBALS['WEBSITE'] = "http://".$_SERVER['SERVER_NAME']."/dnrsystem.com/";
 // $GLOBALS['WEBSITE'] = "http://localhost:8888/`BLC/dnrsystem.com/webapp/";
 
 $GLOBALS['EMAIL_SENDER'] = "no-reply@dnrsystem.com";
