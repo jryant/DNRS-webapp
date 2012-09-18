@@ -107,4 +107,4 @@ h2 {color:#000066; margin-bottom:0; }
 .legend { font-size:0.6em; padding-bottom:10px; }
 .legend span { margin-right:4px; letter-spacing:-1px; }
 
-#practicing { text-align:right; }
+#practicing { float:right; }

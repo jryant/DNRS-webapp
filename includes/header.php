@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <title>Health Survey | Dynamic Neural Retraining System&trade;</title>
+	<meta charset="utf-8">
 	<script src="includes/global.js" type="text/javascript" charset="utf-8"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
@@ -184,24 +185,33 @@
 				$("#s"+term).css("display","block");
 			});
 			
-			$("#cond2, #cond3").hide();
-			
-			$(".cond").each(function(index){
-				var num = index + 1;
-				$("#cond"+num+" input").change(function(){
+			// $("#cond2, #cond3").hide();
+						
+			// $(".cond").each(function(index){
+				// var num = index + 1;
+				var num = "-m";
+				$("#cond"+num+" input").change(function(index){
 					if($("#cond"+num+" input.other").is(':checked')){
 						$("#cond"+num+" input[type=text]").attr('disabled',false);
 						$("#cond"+num+" input[type=text]").focus();
 						var ans = $("#cond"+num+" input[type=text]").val();
+						$("#cond-m_other_chk, #cond-s_other, #cond-s_other_radio").val(ans);
+						// $("#cond-s li").append("<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" value=\""+ans+"\"> "+ans+"</li>\n");
 					}
 					else {
 						$("#cond"+num+" input[type=text]").attr('disabled',true);
 						$("#cond"+num+" input[type=text]").val('');
 						var ans = $("#cond"+num+" input:checked").val();
+						// $("#cond-s li").append("<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" value=\""+ans+"\"> "+ans+"</li>\n");
 					}
-					$("#cond"+num+" .ans").html(ans);
+					// if($("#cond"+num+" .ans").html()!=""){
+					// 	$("#cond"+num+" .ans").append(", "+ans);
+					// } else {
+					// 	$("#cond"+num+" .ans").html(ans);
+					// }
+					// console.log(index);
 				});
-			});
+			// });
 
 			$("#referral input").change(function(){
 				if($("#referral input.other").is(':checked')){
@@ -282,7 +292,7 @@
 				} else {	
 					var section = $(this).parent().parent();
 					if($(section).hasClass("pre_survey")){
-						var inputs = ["cond1","referral","program_method","gender","age"];
+						var inputs = ["cond-m","cond-s","referral","program_method","gender","age"];
 					}
 					else if ($(section).hasClass("follow_up")){
 						var inputs = ["practicing"];

@@ -7,16 +7,23 @@ $headings = array("a","b","c","d");
 if(isset($_GET['a'])){ // Process survey responce
 	$responce = $_POST;
 	
-	// var_dump($responce);
+	// print_r($responce); // debug
+	// die();
+		
+	if (isset($responce['date'])){
+		$date = $responce['date'];
+		unset($responce['date']);
+	}
 	
-	$date = $responce['date'];
-	unset($responce['date']);
+	if (isset($responce['gender'])){
+		$gender = $responce['gender'];
+		unset($responce['gender']);
+	}
 	
-	$gender = $responce['gender'];
-	unset($responce['gender']);
-	
-	$age = $responce['age'];
-	unset($responce['age']);
+	if (isset($responce['age'])){
+		$age = $responce['age'];
+		unset($responce['age']);
+	}
 	
 	unset($responce['submit']);
 	
@@ -25,19 +32,26 @@ if(isset($_GET['a'])){ // Process survey responce
 		unset($responce['q1']);
 	}
 
-	$cond = array();
-	for($n=1;$n<4;$n++){
-		$cond[$n] = "" ; //"YES - ".$n;
-		if (isset($responce['cond'.$n.'_other']) && $responce['cond'.$n.'_other']!=""){
-			$cond[$n] = (get_magic_quotes_gpc()) ? $responce['cond'.$n.'_other'] : addslashes($responce['cond'.$n.'_other']) ;
-			unset($responce['cond'.$n.'_other']);
-			unset($responce['cond'.$n]);
+	// var_dump($responce['cond-m']);
+	// var_dump($responce['cond-s']);
+	// die();
+	$cond_m = ""; //"YES - ".$n;
+	if (isset($responce['cond-m']) && $responce['cond-m']!=""){
+		foreach($responce['cond-m'] as $key=>$val){
+			$cond_m .= $val.", ";
 		}
-		elseif (isset($responce['cond'.$n]) && $responce['cond'.$n]!=""){
-			$cond[$n] = (get_magic_quotes_gpc()) ? $responce['cond'.$n] : addslashes($responce['cond'.$n]) ;
-			unset($responce['cond'.$n]);
-		}
-
+		$cond_ms = substr($cond_m, 0, -2);
+		// $cond_m[] = (get_magic_quotes_gpc()) ? $responce['cond-m'] : addslashes($responce['cond-m']) ;
+		unset($responce['cond-m']);
+	}
+	// if (isset($responce['cond-m_other']) && $responce['cond-m_other']!=""){
+	// 	$cond_m[] = (get_magic_quotes_gpc()) ? $responce['cond-m_other'] : addslashes($responce['cond-m_other']) ;
+	// 	unset($responce['cond-m_other']);
+	// }
+	
+	if (isset($responce['cond-s']) && $responce['cond-s']!=""){
+		$cond_s = (get_magic_quotes_gpc()) ? $responce['cond-s'] : addslashes($responce['cond-s']) ;
+		unset($responce['cond-s']);
 	}
 
 	if (isset($responce['referral_other'])){
@@ -54,30 +68,38 @@ if(isset($_GET['a'])){ // Process survey responce
 		$program_method = $responce['program_method'];
 		unset($responce['program_method']);
 	}
+	
+	if (isset($responce['start']) && $responce['start']=="Not Started"){
+		$responce['program_start_date'] = "Not Started";
+	}	
+	unset($responce['start']);
+		
 	if(isset($responce['program_start_date'])){
 		$program_start_date = $responce['program_start_date'];
 		unset($responce['program_start_date']);
 	}
 	// print_r($responce);
+	// die();
 		
 	/* UPDATE USER TABLE */
 	$query = "UPDATE users SET ";	
-	if(isset($program_method) && isset($program_start_date)){
+	$query .= (isset($program_start_date)) ? "`program_start_date`='$program_start_date', " : "" ;
+	if(isset($program_method)){
 		$query .= "`program_method`='$program_method'";
-		$query .= ",`program_start_date`='$program_start_date'";
+		// $query .= ",`program_start_date`='$program_start_date'";
 		$query .= ",`gender`='$gender'";
 		$query .= ",`age`='$age'";
-		$query .= ",`cond1`='".$cond[1]."'";
-		$query .= (isset($cond[2])) ? ",`cond2`='".$cond[2]."'" : ",`cond2`=NULL" ;
-		$query .= (isset($cond[3])) ? ",`cond3`='".$cond[3]."'" : ",`cond3`=NULL" ;
+		$query .= ",`cond1`='".$cond_ms."'";
+		$query .= ",`cond2`='".$cond_s."'";
+		// $query .= (isset($cond[3])) ? ",`cond3`='".$cond[3]."'" : ",`cond3`=NULL" ;
 		$query .= ",`referral`='$referral',";
 	}
-	
+
 	$next_survey = date("Y-m-d",strtotime(date("Y-m-d", strtotime($date)) . " +1 months"));
 	// echo $next_survey;
 	$query .= "`last_survey`='$date',`next_survey`='$next_survey'";
 	$query .= " WHERE ID='{$_SESSION['uid']}'";
-	// echo "<hr/>".$query."<br/>";
+	// echo "<hr/>".$query."<br/>"; die();
 	$result = mysql_query($query) or die("Error updating user table: ".mysql_error());
 	
 	/* UPDATE RESPONSES TABLE */	
@@ -149,7 +171,7 @@ if(isset($_GET['a'])){ // Process survey responce
 		echo "<p>Thank you for taking the time to fill out the survey.<br/>Know that your efforts are assisting us in helping others.</p>\n
 		<p>Yours in Good Health,<br/>The DNRS Team</p>";
 	}
-	// var_dump($result);
+	// var_dump($result); // debug
 }
 
 
@@ -192,29 +214,32 @@ else{ // Display survey form
 		showMessageBlock($page);
 		echo "<span class=\"heading\">Initial Questions</span>";
 		
-		$cond = array(
-			1 => "is the <span class=\"cond_type\">most severe</span>",
-			2 => "<span class=\"cond_type\">secondary</span>",
-			3 => "<span class=\"cond_type\">tertiary</span>"
-		);
-		for($n=1;$n<=3;$n++){
-			$s = $n + 1;
-			echo "<div class=\"cond\" id=\"cond".$n."\">
-				<ul>
-					<li>What ".$cond[$n]." condition are you recovering from? <span class=\"ans\"></span></li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Chemical Sensitivities\"> Chemical Sensitivities</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Chronic Fatigue Syndrome\"> Chronic Fatigue Syndrome</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Fibromyalgia\"> Fibromyalgia</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Electric Hypersensitivity Syndrome\"> Electric Hypersensitivity Syndrome</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Anxiety\"> Anxiety</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" value=\"Food Sensitivities\"> Food Sensitivities</li>
-					<li><input onChange=\"checkInput('cond".$n."');\" type=\"radio\" name=\"cond".$n."\" class=\"other\"> Other <input type=\"text\" name=\"cond".$n."_other\" value=\"\" disabled>";
-			echo ($n!=3) ? " <a href=\"#\" onClick=\"cond_expand('cond".$s."');\" class=\"cond".$s."\">Add another condition?</a>" : "" ;
-			echo "</li>
-				</ul>
-			</div>\n";
-		}
+		echo "<div class=\"cond\" id=\"cond-m\">
+			<ul>
+				<li>What are the conditions are you recovering from? <span class=\"ans\"></span></li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Chemical Sensitivities\"> Chemical Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Chronic Fatigue Syndrome\"> Chronic Fatigue Syndrome</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Fibromyalgia\"> Fibromyalgia</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Electric Hypersensitivity Syndrome\"> Electric Hypersensitivity Syndrome</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Anxiety\"> Anxiety</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Food Sensitivities\"> Food Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" id=\"cond-m_other_chk\" value=\"\" class=\"other\"> Other <input type=\"text\" id=\"cond-m_other\"></li>
+			</ul>
+		</div>\n";
 		
+		echo "<div class=\"cond\" id=\"cond-s\">
+			<ul>
+				<li>What is the most severe condition are you recovering from? <span class=\"ans\"></span></li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Chemical Sensitivities\"> Chemical Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Chronic Fatigue Syndrome\"> Chronic Fatigue Syndrome</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Fibromyalgia\"> Fibromyalgia</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Electric Hypersensitivity Syndrome\"> Electric Hypersensitivity Syndrome</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Anxiety\"> Anxiety</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Food Sensitivities\"> Food Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" id=\"cond-s_other_radio\" class=\"other\"> Other <input type=\"text\" id=\"cond-s_other\" disabled></li>
+			</ul>
+		</div>\n";
+				
 		echo "<div id=\"referral\">
 	<ul>
 		<li>How did you hear about the Dynamic Neural Retraining System? <span class=\"ans\"></span></li>
@@ -244,21 +269,52 @@ else{ // Display survey form
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
 			</li>
-			<li>What date did you begin the program? <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".date('Y-m-d')."\"></li>
-		</ul>";
+			<li>Today's date is ".date('Y-m-d')."</li>
+			<li><input type=\"hidden\" name=\"program_start_date\" value=\"".date('Y-m-d')."\" /></li>
+		</ul>"; // id=\"program_start_date\" 
 	}
 	else { // Display subsequent survey question
 		$result = mysql_query("SELECT * FROM questions WHERE QID='q1'");
 		$q1 = mysql_fetch_array($result);
+		
+		$dresult = mysql_query("SELECT program_start_date FROM users WHERE ID='{$_SESSION['uid']}'");
+		$date = mysql_fetch_array($dresult);
+		
+		if(!$date || $date[0]=="0000-00-00"){
+			$not_started = "checked";
+			$started = "";
+			$nice_date = "";
+		} else {
+			$not_started = "";
+			$started = "checked";
+			$nice_date = $date[0];
+		}
+		
 		echo "<div class=\"section follow_up p".$page."\">";
 		showMessageBlock($page);
 		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
 		// echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
-		echo "<p>".$q1[2]."</p>
+		echo "<ul class=\"pre_survey\">
+			<li>Please select:
+				<ul>
+					<li><input type=\"radio\" name=\"start\" value=\"Not Started\" ".$not_started." /> I have not started the program yet.</li>
+					<li><input type=\"radio\" name=\"start\" value=\"Started\" ".$started." /> I started the program on <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".$nice_date."\"></li>
+				</ul>
+			</li>
+			<li>Are you practicing the Limbic System Retraining Steps for an hour a day? <br />
+				<span id=\"practicing\">
+					<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
+					<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
+				</span>
+			</li>
+			<div class=\"clearme\"></div>
+		</ul>";
+
+		/*echo "<p>".$q1[2]."</p>
 		<p id=\"practicing\">
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
-		</p>";
+		</p>";*/
 	}
 		
 	echo section_navi($page,$pagetot,true,false);
@@ -311,7 +367,7 @@ else{ // Display survey form
 			$v = $n-1;
 			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" />";
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" checked />"; // debug
 			} else {
 				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}

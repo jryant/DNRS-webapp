@@ -63,7 +63,7 @@ else { // Admin screen
 	
 	$conds_name = array("Chemical Sensitivities", "Chronic Fatigue Syndrome", "Fibromyalgia", "Electric Hypersensitivity Syndrome", "Anxiety", "Food Sensitivities");
 	$conds_raw = array();
-	$conds_query = "(";
+	$conds_query = "";
 	if (isset($_GET['cond'])){
 		$cond = $_GET['cond'];
 		if(!empty($cond)){
@@ -71,11 +71,11 @@ else { // Admin screen
 			for($i=0; $i < $c; $i++){
 				$conds_raw[] = $cond[$i];
 				$conds_query .= ($i!=0) ? "," : "" ;
-				$conds_query .= "\"".$conds_name[$cond[$i]]."\"";
+				$conds_query .= $conds_name[$cond[$i]];
 			}
 		}
 	}
-	$conds_query .= ")";
+	$conds_query .= "";
 
 	// echo $_SERVER['QUERY_STRING'];
 	// echo "<br/>";
@@ -163,7 +163,8 @@ else { // Admin screen
 				$where[] = " (u.gender='".$gender_raw."')";
 			}
 			if (!empty($conds_raw)){
-				$where[] = " (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")";
+				// $where[] = " (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")";
+				$where[] = " (u.cond1 LIKE '%".$conds_query."%')";
 			}
 			// var_dump($where);
 			
@@ -179,7 +180,7 @@ else { // Admin screen
 		}
 		$query .= ($orderby) ? " ORDER BY s.$orderby $order" : "" ;
 
-		// echo "<hr/>"; var_dump($query);
+		var_dump($query); echo "<hr/>";
 		
 		$result = mysql_query($query) or die(mysql_error());
 
