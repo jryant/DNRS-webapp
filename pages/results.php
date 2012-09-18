@@ -180,7 +180,7 @@ else { // Admin screen
 		}
 		$query .= ($orderby) ? " ORDER BY s.$orderby $order" : "" ;
 
-		var_dump($query); echo "<hr/>";
+		// var_dump($query); echo "<hr/>";
 		
 		$result = mysql_query($query) or die(mysql_error());
 

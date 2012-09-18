@@ -58,6 +58,7 @@
 		$last_name = $_POST['last'];
 		$email = $_POST['email'];
 		$date_joined = date("Y-m-d");
+		$final_remind = date('Y-m-d', strtotime('+180 days'));
 		$ekey = sha1(microtime(true).mt_rand(10000,90000));
 	
 		$result = addNewUser($username,$first_name,$last_name,$email,$password,$date_joined,$ekey);

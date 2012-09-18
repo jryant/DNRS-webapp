@@ -12,14 +12,16 @@ function displayProfile(){
 			$name = $dbarray['first_name']." ".$dbarray['last_name'];
 			$email = $dbarray['email'];
 			$date_joined = niceDate($dbarray['date_joined']);
-			// $date_joined = strftime("%b %d, %Y", strtotime($date_joined));
+			// $last_survey = niceDate($dbarray['final_remind']);
 		}
 	}
+	
 	$output = "<ul id=\"profile\">
 		<li class=\"name\">Name: <span class=\"response\">$name</span></li>
 		<li class=\"email\">Email: <span class=\"response\">$email</span></li>
-		<li class=\"date_joined\">Date joined: <span class=\"response\">$date_joined</span></li>
-	</ul>";
+		<li class=\"date_joined\">Date joined: <span class=\"response\">$date_joined</span></li>";
+		/* <li>Final remind: <span class=\"response\">$final_remind</span></li> */
+	$output .= "</ul>";
 	echo $output;
 }
 

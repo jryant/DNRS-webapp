@@ -367,7 +367,7 @@ else{ // Display survey form
 			$v = $n-1;
 			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" checked />"; // debug
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" />";
 			} else {
 				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}
