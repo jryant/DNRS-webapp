@@ -438,4 +438,19 @@ function sectionHeading($heading,$page){
 	// echo "<script>console.log(".$page.");</script>";
 }
 
+function getCountries(){
+	global $conn;
+	$query = "SELECT * FROM countries";
+	$result = mysql_query($query) or die(mysql_error());
+	echo mysql_num_rows($result)." countries found.<br/>";
+	// echo "<select name=\"country\"  onchange=\"getCity(this.value)\">\n\t<option>Select Country</option>";
+	while($row = mysql_fetch_array($result)) {
+		// echo $row['name']."<br/>";
+		$country_name = strtoupper($row['name']);
+		echo "\n\t<option value=".$row['code'].">".$country_name."</option>";
+	}
+	echo "\n</select>";
+	
+}
+
 ?>

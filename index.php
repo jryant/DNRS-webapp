@@ -26,7 +26,7 @@
 	echo "<div id=\"banner\">
 			<img src=\"http://www.dnrsystem.com/images/Dynamic_Neural_Retraining.jpg\" width=\"594\" height=\"200\" />
 		</div>";
-	echo ($page=="results" && $_SESSION['admin']) ? "<div id=\"content\" class=\"admin_results\">" : "<div id=\"content\">";
+	echo ($page=="results" && $_SESSION['admin']) ? "<div id=\"content\" class=\"admin_results\"><div class=\"innercontent\">" : "<div id=\"content\"><div class=\"innercontent\">";
 	displayMessages();
 	if($logged_in){
 		draw_page($page);
@@ -37,7 +37,7 @@
 	else {
 		displayLogin();
 	}
-	echo "</div>";
+	echo "</div></div><div class=\"clearme\"></div>";
 ?>
 
 </div>

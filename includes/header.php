@@ -58,14 +58,14 @@
 			// 	format: 'yyyy-mm-dd'
 			// });
 
-			$( "#program_start_date" ).datepicker({
+			$("#program_start_date").datepicker({
 				showOn: "button",
 				buttonImage: "img/redmond/calendar.gif",
 				buttonImageOnly: true,
 				dateFormat: 'yy-mm-dd',
 				showOn: 'both'
 			});
-
+						
 			$("#age").numeric();
 			
 			var wizard = $("#survey");
@@ -292,7 +292,7 @@
 				} else {	
 					var section = $(this).parent().parent();
 					if($(section).hasClass("pre_survey")){
-						var inputs = ["cond-m","cond-s","referral","program_method","gender","age"];
+						var inputs = ["cond-m","cond-s","cond-duration","referral","program_method","program_start","gender","age"]; // debug - add location error checking
 					}
 					else if ($(section).hasClass("follow_up")){
 						var inputs = ["practicing"];
@@ -594,6 +594,50 @@
 			});
 			// console.log(email);
 		}
+		
+		function getCity(country_code){
+			$("#city").html("<img src=\"img/ajax-loader.gif\">");
+			country_code = country_code.toLowerCase();
+			console.log(country_code);
+			// var strURL="findCity.php?country="+countryId;
+			$.ajax({
+				url: "ajax.php",
+				type: "POST",
+				data: "action=findcity&country_code="+country_code,
+				success: function(html){
+					$("#city").html(html);
+					console.log(html);
+				}
+			});
+		  // var req = getXMLHTTP();
+		  // if (req)
+		  // {
+		  //   req.onreadystatechange = function()
+		  //   {
+		  //     if (req.readyState == 4) // only if "OK"
+		  //     {
+		  //       if (req.status == 200)
+		  //       {
+		  //         document.getElementById('citydiv').innerHTML=req.responseText;
+		  //       } else {
+		  //         alert("There was a problem while using XMLHTTP:\n" + req.statusText);
+		  //       }
+		  //     }
+		  //   }
+		  //   req.open("GET", strURL, true);
+		  //   req.send(null);
+		  // }
+		}
+		
+		function showDatepicker(){
+			var $dp = $("#program_start_date").datepicker();
+			$dp.datepicker("show");
+		}
+		
+		function selectStarted(){
+			$("#started").attr("checked","checked");
+		}
+		
 	</script>
 </head>
 <body id="body">

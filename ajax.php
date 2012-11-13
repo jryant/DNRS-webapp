@@ -53,6 +53,24 @@ switch($action){
 		echo "An invitation has been sent to $email.<br/>";
 		break;
 		
+	case 'findcity':
+		global $conn;
+		$country_code = $_POST['country_code']; // debug secure
+		$query = "SELECT * FROM cities WHERE country_code='$country_code'";
+		$result = mysql_query($query) or die(mysql_error());
+		if (mysql_num_rows($result) > 1){
+			echo "<select name=\"city\">\n\t<option>Select City</option>";
+			while($row = mysql_fetch_array($result)) {
+				// echo $row['name']."<br/>";
+				$city_name = strtoupper($row['name']);
+				echo "\n\t<option value=\"".$city_name."\">".$city_name."</option>";
+			}
+			echo "\n</select>";
+		} else {
+			echo "<img src=\"img/green-checkmark.png\">";
+		}
+		break;
+		
 	default:
 		echo "no action specified";
 		break;

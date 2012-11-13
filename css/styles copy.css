@@ -81,8 +81,5 @@ h2 {color:#000066; }
 .cond_type { font-weight:bold; font-style:italic; }
 .ans { display:none; }
 
-.cond_res ul { padding:0px; }
-.cond_res { border:1px solid #006; font-size:0.9em; width:500px; padding:0 10px 10px 10px; }
-.cond_res ul > li {  } /* margin-left:205px; */
-.cond_res .col2 { float:left; width:210px; }
-.cond_res .reset {  float:right; display:block; }
+/*.cond_res ul li.col2 { float:left; color:red; }*/
+.cond_res a { font-size:0.9em; float:right; }

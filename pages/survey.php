@@ -25,6 +25,18 @@ if(isset($_GET['a'])){ // Process survey responce
 		unset($responce['age']);
 	}
 	
+	if (isset($responce['country'])){
+		$country = $responce['country'];
+		$country = ($country == "Select Country" || $country == "") ? NULL : $country ;
+		unset($responce['country']);
+	}
+	
+	if (isset($responce['city'])){
+		$city = $responce['city'];
+		$city = ($city == "Select City" || $city == "") ? NULL : $city ;
+		unset($responce['city']);
+	}
+	
 	unset($responce['submit']);
 	
 	if(isset($responce['q1'])){
@@ -53,6 +65,11 @@ if(isset($_GET['a'])){ // Process survey responce
 		$cond_s = (get_magic_quotes_gpc()) ? $responce['cond-s'] : addslashes($responce['cond-s']) ;
 		unset($responce['cond-s']);
 	}
+	
+	if (isset($responce['cond-duration']) && $responce['cond-duration']!=""){
+		$cond_duration = (get_magic_quotes_gpc()) ? $responce['cond-duration'] : addslashes($responce['cond-duration']) ;
+		unset($responce['cond-duration']);
+	}
 
 	if (isset($responce['referral_other'])){
 		$referral = (get_magic_quotes_gpc()) ? $responce['referral_other'] : addslashes($responce['referral_other']) ;
@@ -70,7 +87,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	}
 	
 	if (isset($responce['start']) && $responce['start']=="Not Started"){
-		$responce['program_start_date'] = "Not Started";
+		unset($responce['program_start_date']);
 	}	
 	unset($responce['start']);
 		
@@ -79,6 +96,9 @@ if(isset($_GET['a'])){ // Process survey responce
 		unset($responce['program_start_date']);
 	}
 	// print_r($responce);
+	// var_dump($country);
+	// var_dump($city);
+	// var_dump($program_start_date);
 	// die();
 		
 	/* UPDATE USER TABLE */
@@ -89,8 +109,11 @@ if(isset($_GET['a'])){ // Process survey responce
 		// $query .= ",`program_start_date`='$program_start_date'";
 		$query .= ",`gender`='$gender'";
 		$query .= ",`age`='$age'";
+		$query .= (isset($city)) ? ",`country`='$country'" : NULL ;
+		$query .= (isset($city)) ? ",`city`='$city'" : NULL ;
 		$query .= ",`cond1`='".$cond_ms."'";
 		$query .= ",`cond2`='".$cond_s."'";
+		$query .= ",`cond_duration`='".$cond_duration."'";
 		// $query .= (isset($cond[3])) ? ",`cond3`='".$cond[3]."'" : ",`cond3`=NULL" ;
 		$query .= ",`referral`='$referral',";
 	}
@@ -216,29 +239,45 @@ else{ // Display survey form
 		
 		echo "<div class=\"cond\" id=\"cond-m\">
 			<ul>
-				<li>What are the conditions are you recovering from? <span class=\"ans\"></span></li>
+				<li>What are the conditions from which you are recovering? <span class=\"ans\"></span></li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Chemical Sensitivities\"> Chemical Sensitivities</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Chronic Fatigue Syndrome\"> Chronic Fatigue Syndrome</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Fibromyalgia\"> Fibromyalgia</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Electric Hypersensitivity Syndrome\"> Electric Hypersensitivity Syndrome</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Anxiety\"> Anxiety</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Food Sensitivities\"> Food Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Post-Tramatic Stress Disorder\"> Post-Tramatic Stress Disorder</li>
+				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" value=\"Gulf War Syndrome\"> Gulf War Syndrome</li>
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" id=\"cond-m_other_chk\" value=\"\" class=\"other\"> Other <input type=\"text\" id=\"cond-m_other\"></li>
 			</ul>
 		</div>\n";
 		
 		echo "<div class=\"cond\" id=\"cond-s\">
 			<ul>
-				<li>What is the most severe condition are you recovering from? <span class=\"ans\"></span></li>
+				<li>What is the most severe condition from which you are recovering? <span class=\"ans\"></span></li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Chemical Sensitivities\"> Chemical Sensitivities</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Chronic Fatigue Syndrome\"> Chronic Fatigue Syndrome</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Fibromyalgia\"> Fibromyalgia</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Electric Hypersensitivity Syndrome\"> Electric Hypersensitivity Syndrome</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Anxiety\"> Anxiety</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Food Sensitivities\"> Food Sensitivities</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Post-Tramatic Stress Disorder\"> Post-Tramatic Stress Disorder</li>
+				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" value=\"Gulf War Syndrome\"> Gulf War Syndrome</li>
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" id=\"cond-s_other_radio\" class=\"other\"> Other <input type=\"text\" id=\"cond-s_other\" disabled></li>
 			</ul>
 		</div>\n";
+		
+		echo "<div id=\"cond-duration\">
+	<ul class=\"pre_survey\">
+		<li>What duration have you had the most severe condition?</li>
+		<li><input onChange=\"checkInput('cond-duration');\" type=\"radio\" name=\"cond-duration\" value=\"&lt; 1 year\"> &lt; 1 year</li>
+		<li><input onChange=\"checkInput('cond-duration');\" type=\"radio\" name=\"cond-duration\" value=\"1 - 5 years\"> 1 - 5 years</li>
+		<li><input onChange=\"checkInput('cond-duration');\" type=\"radio\" name=\"cond-duration\" value=\"5 - 10 years\"> 5 - 10 years</li>
+		<li><input onChange=\"checkInput('cond-duration');\" type=\"radio\" name=\"cond-duration\" value=\"10 - 20 years\"> 10 - 20 years</li>
+		<li><input onChange=\"checkInput('cond-duration');\" type=\"radio\" name=\"cond-duration\" value=\"20 years +\"> 20 years +</li>
+	</ul>
+</div>
+";
 				
 		echo "<div id=\"referral\">
 	<ul>
@@ -263,15 +302,38 @@ else{ // Display survey form
 				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"M\" /> Male
 				<input onChange=\"checkInput('gender');\" type=\"radio\" name=\"gender\" value=\"F\" /> Female
 			</li>
-			<li id=\"age\">How old were you when you began the program? <input onKeyDown=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
+			<li id=\"age\">Age <input onKeyDown=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
+		</ul>
+			";
+		
+		echo "<ul class=\"pre_survey\">
+			<div id=\"location\">
+				<label>Where do you currently live?</label><br/>
+				<span id=\"country\">
+					<select name=\"country\" onChange=\"getCity(this.value)\">
+						<option>Select Country</option>
+						";
+						getCountries();
+		echo "
+					</select>
+				</span><span id=\"city\">&nbsp;</span>
+			</div>
+		</ul>";
+				
+		echo "<ul class=\"pre_survey\">
+			<li id=\"program_start\">Please select:
+				<ul>
+					<li><input onChange=\"checkInput('program_start');\" type=\"radio\" name=\"start\" value=\"Not Started\" /> I have not started the program yet.</li>
+					<li><input id=\"started\" type=\"radio\" name=\"start\" value=\"Started\" onChange=\"showDatepicker();checkInput('program_start');\" /> I started the program on <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"\" onFocus=\"selectStarted();\"></li>
+				</ul>
+			</li>
 			<li id=\"program_method\">In what format are you taking the program?
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"In Person\" /> In Person
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
 			</li>
 			<li>Today's date is ".date('Y-m-d')."</li>
-			<li><input type=\"hidden\" name=\"program_start_date\" value=\"".date('Y-m-d')."\" /></li>
-		</ul>"; // id=\"program_start_date\" 
+		</ul>"; 
 	}
 	else { // Display subsequent survey question
 		$result = mysql_query("SELECT * FROM questions WHERE QID='q1'");
@@ -298,7 +360,7 @@ else{ // Display survey form
 			<li>Please select:
 				<ul>
 					<li><input type=\"radio\" name=\"start\" value=\"Not Started\" ".$not_started." /> I have not started the program yet.</li>
-					<li><input type=\"radio\" name=\"start\" value=\"Started\" ".$started." /> I started the program on <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".$nice_date."\"></li>
+					<li><input id=\"started\" type=\"radio\" name=\"start\" onFocus=\"selectStarted();\" value=\"Started\" ".$started." /> I started the program on <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".$nice_date."\"></li>
 				</ul>
 			</li>
 			<li>Are you practicing the Limbic System Retraining Steps for an hour a day? <br />
@@ -367,7 +429,7 @@ else{ // Display survey form
 			$v = $n-1;
 			echo "<input type=\"radio\" onChange=\"checkInput('".$question[1]."');\" name=\"".$question[1]."\"";
 			if ($n==6){	
-				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" />";
+				echo " title=\"N/A - ".$tooltips[$n]."\" value=\"0\" checked />";
 			} else {
 				echo " title=\"".$n." - ".$tooltips[$n]."\" value=\"$v\"/>";
 			}
