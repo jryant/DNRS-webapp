@@ -95,6 +95,17 @@ if(isset($_GET['a'])){ // Process survey responce
 		$program_start_date = $responce['program_start_date'];
 		unset($responce['program_start_date']);
 	}
+	
+	if(isset($responce['participate'])){
+		$participate = $responce['participate'];
+		unset($responce['participate']);
+	} // debug - decide where to put this
+	
+	if(isset($responce['coaching'])){
+		$coaching = $responce['coaching'];
+		unset($responce['coaching']);
+	} // debug - decide where to put this
+	
 	// print_r($responce);
 	// var_dump($country);
 	// var_dump($city);
@@ -116,7 +127,7 @@ if(isset($_GET['a'])){ // Process survey responce
 		$query .= ",`cond_duration`='".$cond_duration."'";
 		// $query .= (isset($cond[3])) ? ",`cond3`='".$cond[3]."'" : ",`cond3`=NULL" ;
 		$query .= ",`referral`='$referral',";
-	}
+	} else {} // debug
 
 	$next_survey = date("Y-m-d",strtotime(date("Y-m-d", strtotime($date)) . " +1 months"));
 	// echo $next_survey;
@@ -128,7 +139,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	/* UPDATE RESPONSES TABLE */	
 	$query = "INSERT INTO responses "; //(uid,date";
 	
-	$num_q = array("a"=>"26","b"=>"15","c"=>"12","d"=>"19");
+	$num_q = array("a"=>"26","b"=>"16","c"=>"13","d"=>"20");
 	foreach($num_q as $key => $value){
 		for($i=0;$i<$value;$i++){
 			if($i<10){
@@ -149,7 +160,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	$query .= (isset($q1)) ? ",'".$q1."'" : ",NULL" ;
 	$query .= ");";
 	
-	// var_dump($query);
+	// var_dump($query); die();
 	$result = mysql_query($query) or die("Error updating responses table: ".mysql_error());
 
 	/* UPDATE SUMMARY TABLE */
@@ -201,7 +212,7 @@ if(isset($_GET['a'])){ // Process survey responce
 
 
 else{ // Display survey form
-	$qPerPage = 9;
+	$qPerPage = 10;
 	echo "<div id=\"survey\">";
 	$result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSION['uid']}'"));
 	if($result['last_survey']){
@@ -217,9 +228,9 @@ else{ // Display survey form
 		$first_survey = true;
 	}
 	
-	$result = mysql_query("SELECT * FROM questions WHERE QID!='q1'");
+	$result = mysql_query("SELECT * FROM q3 WHERE QID!='q1'");
 	$page = 1;
-	$pagetot = floor(mysql_num_rows($result)/$qPerPage+1);
+	$pagetot = floor(mysql_num_rows($result)/$qPerPage+2);
 		
 	echo "<ul class=\"tabs\">";
 	$pagetot++;
@@ -235,7 +246,8 @@ else{ // Display survey form
 	if($first_survey){ //Display first survey questions
 		echo "<div class=\"section pre_survey p".$page."\">";
 		showMessageBlock($page);
-		echo "<span class=\"heading\">Initial Questions</span>";
+		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
+		// echo "<span class=\"heading\">Initial Questions</span>";
 		
 		echo "<div class=\"cond\" id=\"cond-m\">
 			<ul>
@@ -336,13 +348,13 @@ else{ // Display survey form
 		</ul>"; 
 	}
 	else { // Display subsequent survey question
-		$result = mysql_query("SELECT * FROM questions WHERE QID='q1'");
+		$result = mysql_query("SELECT * FROM q3 WHERE QID='q1'");
 		$q1 = mysql_fetch_array($result);
 		
 		$dresult = mysql_query("SELECT program_start_date FROM users WHERE ID='{$_SESSION['uid']}'");
 		$date = mysql_fetch_array($dresult);
 		
-		if(!$date || $date[0]=="0000-00-00"){
+		if(!$date || $date[0]=="0000-00-00"){ // debug for consistency on returning survey?
 			$not_started = "checked";
 			$started = "";
 			$nice_date = "";
@@ -357,18 +369,39 @@ else{ // Display survey form
 		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
 		// echo "<span class=\"heading\">Pre-Survey Questions</span>\n";
 		echo "<ul class=\"pre_survey\">
+			<div class=\"qline\">
 			<li>Please select:
 				<ul>
 					<li><input type=\"radio\" name=\"start\" value=\"Not Started\" ".$not_started." /> I have not started the program yet.</li>
 					<li><input id=\"started\" type=\"radio\" name=\"start\" onFocus=\"selectStarted();\" value=\"Started\" ".$started." /> I started the program on <input type=\"text\" id=\"program_start_date\" name=\"program_start_date\" value=\"".$nice_date."\"></li>
 				</ul>
 			</li>
-			<li>Are you practicing the Limbic System Retraining Steps for an hour a day? <br />
-				<span id=\"practicing\">
+			</div>
+			
+			<div class=\"qline\">
+				<span class=\"radios\" id=\"practicing\">
 					<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
 					<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"0\" />No
 				</span>
-			</li>
+				<span class=\"question\">Are you practicing the Limbic System Retraining Steps for an hour a day?</span>
+			</div>
+			
+			<div class=\"qline\">
+				<span class=\"radios\" id=\"participate\">
+					<input onChange=\"checkInput('participate');\" type=\"radio\" name=\"participate\" value=\"1\" />Yes
+					<input onChange=\"checkInput('participate');\" type=\"radio\" name=\"participate\" value=\"0\" />No
+				</span>
+				<span class=\"question\">If you have completed the program, do you actively participate in the online community forum?</span>
+			</div>
+			
+			<div class=\"qline\">
+				<span class=\"radios\" id=\"coaching\">
+					<input onChange=\"checkInput('coaching');\" type=\"radio\" name=\"coaching\" value=\"1\" />Yes
+					<input onChange=\"checkInput('coaching');\" type=\"radio\" name=\"coaching\" value=\"0\" />No
+				</span>
+				<span class=\"question\">If you have completed the program, do you book additional coaching sessions for additional clarity and support?</span>
+			</div>
+			
 			<div class=\"clearme\"></div>
 		</ul>";
 
@@ -384,7 +417,7 @@ else{ // Display survey form
 	$page++;	
 	// End pre-survey questions
 	
-	$result = mysql_query("SELECT * FROM questions WHERE QID!='q1'");
+	$result = mysql_query("SELECT * FROM q3 WHERE QID!='q1'");
 	// $page = 1;
 	// $pagetot = floor(mysql_num_rows($result)/11-1);
 	
@@ -414,7 +447,7 @@ else{ // Display survey form
 			}	
 		}
 		// Display each question
-		if($q%($qPerPage+1)==0){ // Determines number of questions (+1) per "page"
+		if($q%($qPerPage+2)==0){ // Determines number of questions (+1) per "page"
 			echo section_navi($page,$pagetot,false,false);
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"

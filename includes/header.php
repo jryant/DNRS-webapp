@@ -295,7 +295,7 @@
 						var inputs = ["cond-m","cond-s","cond-duration","referral","program_method","program_start","gender","age"]; // debug - add location error checking
 					}
 					else if ($(section).hasClass("follow_up")){
-						var inputs = ["practicing"];
+						var inputs = ["practicing","participate","coaching"];
 					}
 					var error = validate(inputs);
 					if(error==0){

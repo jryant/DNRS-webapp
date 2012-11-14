@@ -153,15 +153,15 @@ $questions = array(
 // echo count($questions_c)."<br/>";
 
 foreach($questions as $key => $section){
-	echo $key." - ".count($section)." - Max: ".(count($section)*6)."<br/>";
-	// for($i=0;$i<count($section);$i++){
-	// 	$q = $i;
-	// 	if($i<10){
-	// 		$i = str_pad($i, 2, "0", STR_PAD_LEFT);
-	// 	}
-	// 	print "INSERT INTO `questions` (`QID`,`question`) VALUES ('$key$i','$section[$q]');<br/>";
-	// }
-	// print "<hr/>";
+	echo $key." - ".count($section)."<br/>"; //." - Max: ".(count($section)*6)."<br/>";
+	for($i=0;$i<count($section);$i++){
+		$q = $i;
+		if($i<10){
+			$i = str_pad($i, 2, "0", STR_PAD_LEFT);
+		}
+		print "INSERT INTO `questions` (`QID`,`question`) VALUES ('$key$i','$section[$q]');<br/>";
+	}
+	print "<hr/>";
 }
 
 // print "`q1` INT( 1 ) NULL<br />";
