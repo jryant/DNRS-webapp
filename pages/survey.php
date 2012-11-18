@@ -333,7 +333,7 @@ else{ // Display survey form
 			<div id=\"location\">
 				<label>Where do you currently live?</label><br/>
 				<span id=\"country\">
-					<select name=\"country_code\" onChange=\"setCountryName(this.value);\"> <!-- onChange=\"getCity(this.value)\" -->
+					<select name=\"country_code\" onChange=\"setCountryName(this.value);getCity(this.value)\"> <!-- onChange=\"getCity(this.value)\" -->
 						<option>Select Country</option>
 						";
 						getCountries();
