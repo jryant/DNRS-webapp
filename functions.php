@@ -448,6 +448,7 @@ function getCountries(){
 		// echo $row['name']."<br/>";
 		$country_name = strtoupper($row['name']);
 		echo "\n\t<option value=".$row['code'].">".$country_name."</option>";
+		// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
 	}
 	echo "\n</select>";
 	

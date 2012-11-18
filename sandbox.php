@@ -9,6 +9,7 @@ db_connect();
 // 	echo "&quot;".$question['question']."&quot;"."<br>";
 // }
 
+/*
 $questions = array(
 	"(0135, 'a00', 'I feel rested when I wake up in the morning'),",
 	"(0136, 'a01', 'I drink less than 2 servings of caffeine beverages per day'),",
@@ -96,7 +97,21 @@ for($n=0;$n<count($questions);$n++){
 	// echo "<li>".$questions[$n]."</li>";
 }
 // echo "</ol>";
+*/
 
+require_once('globals.php');
+require_once('functions.php');
+db_connect();
+
+global $conn;
+$query = "SELECT name FROM countries WHERE code='DZ'";
+$result = mysql_query($query) or die(mysql_error());
+$row = mysql_fetch_array($result);
+// if (mysql_num_rows($result) > 1){
+// 	while($row = mysql_fetch_array($result)) {
+	echo $row['name']."<br/>";
+// 	}
+// }
 
 // $str = "('','0020','2012-11-14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 // echo substr_count($str,"'0'");

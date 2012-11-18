@@ -13,7 +13,7 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 #menu a:hover { text-decoration:underline; }
 #content { margin-left:196px;width:574px;background-color:white;padding:10px; }
 
-.admin_results { width:960px !important; position:relative; right:196px; }
+.admin_results { width:1100px !important; position:relative; left:-340px; }
 .admin_results .heading { color:#000066;font-size:1.2em;text-transform:capitalize;line-height:30px;border-bottom:1px solid #666;width:100%;display:block;margin-top:20px; }
 
 .response { font-weight:bold; }

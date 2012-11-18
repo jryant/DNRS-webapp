@@ -25,10 +25,15 @@ if(isset($_GET['a'])){ // Process survey responce
 		unset($responce['age']);
 	}
 	
-	if (isset($responce['country'])){
-		$country = $responce['country'];
-		$country = ($country == "Select Country" || $country == "") ? NULL : $country ;
-		unset($responce['country']);
+	if (isset($responce['country_code'])){
+		$country_code = $responce['country_code'];
+		$country_code = ($country_code == "Select Country" || $country_code == "") ? NULL : $country_code ;
+		unset($responce['country_code']);
+	}
+
+	if (isset($responce['country_name'])){
+		$country_name = $responce['country_name'];
+		unset($responce['country_name']);
 	}
 	
 	if (isset($responce['city'])){
@@ -99,15 +104,15 @@ if(isset($_GET['a'])){ // Process survey responce
 	if(isset($responce['participate'])){
 		$participate = $responce['participate'];
 		unset($responce['participate']);
-	} // debug - decide where to put this
+	}
 	
 	if(isset($responce['coaching'])){
 		$coaching = $responce['coaching'];
 		unset($responce['coaching']);
-	} // debug - decide where to put this
+	}
 	
 	// print_r($responce);
-	// var_dump($country);
+	// var_dump($country_code);
 	// var_dump($city);
 	// var_dump($program_start_date);
 	// die();
@@ -120,7 +125,8 @@ if(isset($_GET['a'])){ // Process survey responce
 		// $query .= ",`program_start_date`='$program_start_date'";
 		$query .= ",`gender`='$gender'";
 		$query .= ",`age`='$age'";
-		$query .= (isset($city)) ? ",`country`='$country'" : NULL ;
+		$query .= (isset($country_code)) ? ",`country_code`='$country_code'" : NULL ;
+		$query .= (isset($country_name)) ? ",`country_name`='$country_name'" : NULL ;
 		$query .= (isset($city)) ? ",`city`='$city'" : NULL ;
 		$query .= ",`cond1`='".$cond_ms."'";
 		$query .= ",`cond2`='".$cond_s."'";
@@ -157,7 +163,9 @@ if(isset($_GET['a'])){ // Process survey responce
 		// echo "<li>".$key." - ".$value."</li>";
 		$query .= ",'".$value."'";
 	}
-	$query .= (isset($q1)) ? ",'".$q1."'" : ",NULL" ;
+	$query .= (isset($q1)) ? ",'".$q1."'" : ",NULL" ; // practicing
+	// $query .= (isset($participate)) ? ",'".$participate."'" : ",NULL" ; // participate
+	// $query .= (isset($coaching)) ? ",'".$coaching."'" : ",NULL" ; // coaching
 	$query .= ");";
 	
 	// var_dump($query); die();
@@ -197,6 +205,9 @@ if(isset($_GET['a'])){ // Process survey responce
 	}
 
 	$query = "INSERT INTO summary SET `uid`='$uid', `date`='$date', `sid`='$sid', `a_raw`='{$total["a"]}', `b_raw`='{$total["b"]}', `c_raw`='{$total["c"]}', `d_raw`='{$total["d"]}', `a_percent`='{$perc["a"]}', `b_percent`='{$perc["b"]}', `c_percent`='{$perc["c"]}', `d_percent`='{$perc["d"]}'";
+	$query .= (isset($participate)) ? ", `participate`='".$participate."'" : ",NULL" ; // participate
+	$query .= (isset($coaching)) ? ", `coaching`='".$coaching."'" : ",NULL" ; // coaching
+	// var_dump($query); die();
 	$result = mysql_query($query) or die(mysql_error());
 	// print $result;
 	
@@ -322,12 +333,13 @@ else{ // Display survey form
 			<div id=\"location\">
 				<label>Where do you currently live?</label><br/>
 				<span id=\"country\">
-					<select name=\"country\" onChange=\"getCity(this.value)\">
+					<select name=\"country_code\" onChange=\"setCountryName(this.value);\"> <!-- onChange=\"getCity(this.value)\" -->
 						<option>Select Country</option>
 						";
 						getCountries();
 		echo "
 					</select>
+					<input type=\"hidden\" id=\"country_name\" name=\"country_name\" value=\"\">
 				</span><span id=\"city\">&nbsp;</span>
 			</div>
 		</ul>";

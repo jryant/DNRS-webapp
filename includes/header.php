@@ -595,6 +595,19 @@
 			// console.log(email);
 		}
 		
+		function setCountryName(country_code){
+			console.log(country_code);
+			$.ajax({
+				url: "ajax.php",
+				type: "POST",
+				data: "action=findcountry&country_code="+country_code,
+				success: function(html){
+					$("#country_name").attr("value",html);
+					console.log(html+" retrieved from "+country_code);
+				}
+			});	
+		}
+
 		function getCity(country_code){
 			$("#city").html("<img src=\"img/ajax-loader.gif\">");
 			country_code = country_code.toLowerCase();

@@ -98,25 +98,39 @@ else { // Admin screen
 		echo "<span class=\"heading\">User Information</span>";
 		echo "<p>Name: <span class=\"response\">".$user['first_name']." ".$user['last_name']."</span>";
 		echo "<br/>Gender: <span class=\"response\">".$user['gender']."</span>";
+		echo "<br/>Location: <span class=\"response\">".ucwords(strtolower($user['country_name']))."</span>";
 		echo "<br/>Age at program start: <span class=\"response\">".$user['age']."</span>";
-		echo "<br/>Program start date: <span class=\"response\">".$user['program_start_date']."</span>";
 		echo "<br/>Program method: <span class=\"response\">".$user['program_method']."</span>";
 		echo "<br/>Date joined: <span class=\"response\">".$user['date_joined']."</span>";
 		echo "<br/>Survey date: <span class=\"response\">".$response['date']."</span>";
 
 		$q1q = mysql_fetch_array(mysql_query("SELECT question FROM questions WHERE QID='q1'"));
 		$q1r = mysql_fetch_array(mysql_query("SELECT q1 FROM responses WHERE ID='$sid'"));
-		switch ($q1r[0]){
-			case '0':
-				echo "<br/>".$q1q[0]." <span class=\"response\">No</span>";
-				break;
-			case '1':
-				echo "<br/>".$q1q[0]." <span class=\"response\">Yes</span>";
-				break;
-			default:
-				echo "<br/><span class=\"response\">First survey</span>";
-				break;
+		$participate = mysql_fetch_array(mysql_query("SELECT participate FROM summary WHERE sid='$sid'"));
+		$coaching = mysql_fetch_array(mysql_query("SELECT coaching FROM summary WHERE sid='$sid'"));
+
+		$f = 0;
+		function yesOrNo($q,$r){
+		global $f;
+			switch ($r){
+				case '0':
+					return "<br/>".$q." <span class=\"response\">No</span>";
+					break;
+				case '1':
+					return "<br/>".$q." <span class=\"response\">Yes</span>";
+					break;
+				default:
+					return ($f==0) ? "<br/><span class=\"response\">First survey</span>" : "" ;
+					$f++;
+					break;
+			}
 		}
+
+		echo "<span class=\"heading\">Pre-Survey Questions</span>";
+		echo "<br/>Program start date: <span class=\"response\">".$user['program_start_date']."</span>";
+		echo yesOrNo($q1q[0],$q1r[0]);
+		echo yesOrNo("Do you actively participate in the online community forum?",$participate[0]);
+		echo yesOrNo("Do you book additional coaching sessions for additional clarity and support?",$coaching[0]);
 		echo "</p>";
 		
 		while($question = mysql_fetch_array($questions)){
@@ -210,7 +224,7 @@ else { // Admin screen
 
 		echo "<table class=\"results\" cellspacing=\"0\" cellpadding=\"0\"><tr>";
 		echo "<td class=\"name\">Name</td>";
-		echo "<td>Start Age</td>";
+		echo "<td>Age</td>";
 		echo "<td>Gender
 		<br/><form action=\"index.php\" method=\"get\">
 			<select name=\"gender\" id=\"gender\" onchange=\"form.submit()\"";
@@ -239,7 +253,7 @@ else { // Admin screen
 		</form></td>";
 		
 		echo "</td>";
-
+		echo "<td>Location</td>";
 		echo "<td>Program Method
 		<br/><form action=\"index.php\" method=\"get\">
 			<select name=\"program_method\" id=\"program_method\" onchange=\"form.submit()\"";
@@ -270,6 +284,7 @@ else { // Admin screen
 		}
 		echo "</select>
 		</form></td>";
+		echo "<td>Start Date</td>";
 		echo "<td><a href=\"index.php?p=results&orderby=date&order=";
 		echo ($order=="ASC") ? "DESC" : "ASC" ;
 		echo ($uid) ? "&uid=".$uid : "" ;
@@ -280,25 +295,40 @@ else { // Admin screen
 				echo "&cond[]=".$conds_raw[$i];
 			}
 		}
-		echo "\">Date";
+		echo "\">Survey Date";
 		if($order){
 			echo "<span class=\"arrow ";
 			echo ($order=="DESC") ? "down" : "up" ;
 			echo "\"></span>";
 		}
 		echo "</a></td>";
-		echo "<td>Condition #1</td>";
-		echo "<td>Condition #2</td>";
-		echo "<td>Condition #3</td>";
-		echo "<td>Sec A</td>";
-		echo "<td>Sec B</td>";
-		echo "<td>Sec C</td>";
-		echo "<td>Sec D</td>";
+		echo "<td>Conditions Recovering From</td>";
+		echo "<td>Most Severe Conditon</td>";
+		echo "<td>Duration</td>";
+		echo "<td>Participate?</td>";
+		echo "<td>Coaching?</td>";
+		echo "<td style=\"width:150px;\">Summary</td>";
+		// echo "<td>Sec B</td>";
+		// echo "<td>Sec C</td>";
+		// echo "<td>Sec D</td>";
 		echo "<td></td>";
 		echo "</tr>";
 		// var_dump($result);
 		// while($summary = mysql_fetch_array($result)){
-			
+		
+		function yesOrNo($q,$r){
+			switch ($r){
+				case '0':
+					return "No";
+					break;
+				case '1':
+					return "Yes";
+					break;
+				default:
+					break;
+			}
+		}
+
 		$n = 0;
 		if(!$result || (mysql_numrows($result) < 1)){
 			echo "<tr class=\"odd\"><td class=\"numrows\" colspan=\"12\">No results</td></tr>";
@@ -319,15 +349,19 @@ else { // Admin screen
 			echo "\">".$summary['first_name']." ".$summary['last_name']."</a></td>";
 			echo "<td>".$summary['age']."</td>";
 			echo "<td>".$summary['gender']."</td>";
+			echo "<td>".ucwords(strtolower($summary['country_name']))."</td>";
 			echo "<td>".$summary['program_method']."</td>";
+			echo "<td>".$summary['program_start_date']."</td>";
 			echo "<td>".$summary['date']."</td>";
 			echo "<td>".$summary['cond1']."</td>";
 			echo "<td>".$summary['cond2']."</td>";
-			echo "<td>".$summary['cond3']."</td>";			
-			echo "<td>".$summary['a_raw']."<br/>".$summary['a_percent']."%</td>";
-			echo "<td>".$summary['b_raw']."<br/>".$summary['b_percent']."%</td>";
-			echo "<td>".$summary['c_raw']."<br/>".$summary['c_percent']."%</td>";
-			echo "<td>".$summary['d_raw']."<br/>".$summary['d_percent']."%</td>";
+			echo "<td>".$summary['cond_duration']."</td>";	
+			echo "<td>".yesOrNo("Do you actively participate in the online community forum?",$summary['participate'])."</td>";
+			echo "<td>".yesOrNo("Do you book additional coaching sessions for additional clarity and support?",$summary['coaching'])."</td>";
+			echo "<td>A: ".$summary['a_raw']." &bull; ".$summary['a_percent']."%<br/>";
+			echo "B: ".$summary['b_raw']." &bull; ".$summary['b_percent']."%<br/>";
+			echo "C: ".$summary['c_raw']." &bull; ".$summary['c_percent']."%<br/>";
+			echo "D: ".$summary['d_raw']." &bull; ".$summary['d_percent']."%</td>";
 			echo "<td><a href=\"index.php?p=results&view=detail&sid=".$summary['sid']."\">Detail</a>";
 			echo "</tr>";
 	

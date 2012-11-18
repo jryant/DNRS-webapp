@@ -53,6 +53,21 @@ switch($action){
 		echo "An invitation has been sent to $email.<br/>";
 		break;
 		
+	case 'findcountry':
+		global $conn;
+		$country_code = $_POST['country_code'];
+		// echo "<script>console.log('it totally should work');</script>";
+		$query = "SELECT * FROM countries WHERE code='$country_code'";
+		$result = mysql_query($query) or die(mysql_error());
+		$row = mysql_fetch_array($result);
+		echo $row['name'];
+		// if (mysql_num_rows($result) > 1){
+		// 	while($row = mysql_fetch_array($result)) {
+		// 		echo $row;
+		// 	}
+		// }
+		break;
+
 	case 'findcity':
 		global $conn;
 		$country_code = $_POST['country_code']; // debug secure
