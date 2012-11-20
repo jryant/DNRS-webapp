@@ -104,14 +104,18 @@ require_once('functions.php');
 db_connect();
 
 global $conn;
-$query = "SELECT name FROM countries WHERE code='DZ'";
-$result = mysql_query($query) or die(mysql_error());
-$row = mysql_fetch_array($result);
-// if (mysql_num_rows($result) > 1){
-// 	while($row = mysql_fetch_array($result)) {
-	echo $row['name']."<br/>";
-// 	}
-// }
+
+			$cities_q = "SELECT DISTINCT(city),country_code FROM users WHERE country_code='US';";
+			$cities_r = mysql_query($cities_q) or die(mysql_error());
+			while($row = mysql_fetch_array($cities_r)) {
+				if($row['city']!=""){
+					$city_disp = ucwords(strtolower($row['city']));
+					echo "<li>".urlencode($row['city'])."</li>";
+					// echo ($row['city']=="SAN FRANSISCO") ? " selected" : "";
+					// echo ">".$city_disp."</option>";
+					// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
+				}
+			}
 
 // $str = "('','0020','2012-11-14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 // echo substr_count($str,"'0'");

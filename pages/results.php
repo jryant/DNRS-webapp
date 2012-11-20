@@ -60,8 +60,12 @@ else { // Admin screen
 		}
 	}
 	$gender_raw = (isset($_GET['gender'])) ? mysql_real_escape_string($_GET['gender']) : "" ;
-	
-	$conds_name = array("Chemical Sensitivities", "Chronic Fatigue Syndrome", "Fibromyalgia", "Electric Hypersensitivity Syndrome", "Anxiety", "Food Sensitivities");
+	$participate = (isset($_GET['participate'])) ? mysql_real_escape_string($_GET['participate']) : "" ;
+	$coaching = (isset($_GET['coaching'])) ? mysql_real_escape_string($_GET['coaching']) : "" ;
+	$country_code = (isset($_GET['country_code'])) ? mysql_real_escape_string($_GET['country_code']) : "" ;
+	$city = (isset($_GET['city']) && $_GET['city']!="") ? mysql_real_escape_string($_GET['city']) : "" ;
+
+	$conds_name = array("Chemical Sensitivities", "Chronic Fatigue Syndrome", "Fibromyalgia", "Electric Hypersensitivity Syndrome", "Anxiety", "Food Sensitivities", "Post-Tramatic Stress Disorder", "Gulf War Syndrome");
 	$conds_raw = array();
 	$conds_query = "";
 	if (isset($_GET['cond'])){
@@ -80,6 +84,7 @@ else { // Admin screen
 	// echo $_SERVER['QUERY_STRING'];
 	// echo "<br/>";
 	// var_dump($conds_query);
+	// var_dump($participate);
 	// echo "<br/>";
 		
 	if($view=="detail" && $sid){ // Survey results detail view
@@ -180,9 +185,22 @@ else { // Admin screen
 				// $where[] = " (u.cond1 IN ".$conds_query." OR u.cond2 IN ".$conds_query." OR u.cond3 IN ".$conds_query.")";
 				$where[] = " (u.cond1 LIKE '%".$conds_query."%')";
 			}
+			if (isset($participate) && $participate!=""){
+				$where[] = " (s.participate='".$participate."')";
+			}
+			if (isset($coaching) && $coaching!=""){
+				$where[] = " (s.coaching='".$coaching."')";
+			}
+			if (isset($country_code) && $country_code!=""){
+				$where[] = " (u.country_code='".$country_code."')";
+			}
+			if (isset($city) && $city!=""){
+				$where[] = " (u.city='".urldecode($city)."')";
+			}
+
 			// var_dump($where);
 			
-			if ((isset($program_method) && $program_method!="") || (isset($gender_raw) && $gender_raw!="") || (!empty($conds_raw))){
+			if ((isset($program_method) && $program_method!="") || (isset($gender_raw) && $gender_raw!="") || (!empty($conds_raw)) || (isset($participate) && $participate!="") || (isset($coaching) && $coaching!="") || (isset($country_code) && $country_code!="") || (isset($city) && $city!="")){
 				$query .= " WHERE ";
 				for($a = 0;$a < count($where);$a++){
 					$query .= ($a>0) ? " AND " : "" ;
@@ -202,14 +220,14 @@ else { // Admin screen
 		echo "<h2>Survey Results &mdash; Summmaries <span class=\"reset\">(<a href=\"index.php?p=results\">Reset All Filters</a>)</span></h2>";
 
 		echo "<div class=\"cond_res\"><ul>";
-		echo "Narrow results by condition:<br/><form action=\"index.php\" method=\"get\">";
+		echo "<h4>Narrow results by condition:</h4><form action=\"index.php\" method=\"get\">";
 		foreach($conds_name as $key => $value){
 			echo ($key==0) ? "<div class=\"col2\">" : "" ;
-			echo "<li><input type=\"checkbox\" name=\"cond[]\" value=\"".$key."\" onchange=\"form.submit()\"";
+			echo "<li><input type=\"checkbox\" name=\"cond[]\" value=\"".$key."\" onchange=\"resultsLoader();form.submit()\"";
 			echo ($uid) ? " disabled" : "" ;
 			echo (!empty($conds_raw) && in_array($key,$conds_raw)) ? " checked" : "" ;
 			echo " /> ".$value."</li>";
-			echo ($key==2) ? "</div>" : "" ;
+			echo ($key==3) ? "</div>" : "" ;
 		}
 		echo "</ul>";
 		echo "<input type=\"hidden\" name=\"p\" value=\"results\">";
@@ -218,16 +236,75 @@ else { // Admin screen
 		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
 		echo (isset($pm_raw) && $pm_raw!="") ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
 		echo ($uid) ? "<input type=\"hidden\" name=\"uid\" value=\"".$uid."\">" : "" ;
+		echo ($participate) ? "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">" : "" ;
+		echo ($coaching) ? "<input type=\"hidden\" name=\"coaching\" value=\"".$coaching."\">" : "" ;
+		echo ($country_code) ? "<input type=\"hidden\" name=\"country_code\" value=\"".$country_code."\">" : "" ;
+		echo ($city) ? "<input type=\"hidden\" name=\"city\" value=\"".$city."\">" : "" ;
+		echo "</form>";
+		echo "<br/>";
+
+		echo "<h4>Narrow results by location:</h4><form action=\"index.php\" method=\"get\">
+				<span id=\"country\">
+					<select name=\"country_code\" onChange=\"clearCity();resultsLoader();form.submit();\"> <!-- setCountryName(this.value);getCity(this.value); -->
+						<option value=\"\">All Countries</option>
+						";
+		$countries_q = "SELECT DISTINCT(country_name),country_code FROM users";
+		$countries_r = mysql_query($countries_q) or die(mysql_error());
+		while($row = mysql_fetch_array($countries_r)) {
+			if($row['country_name']!=""){
+				$country_name = ucwords(strtolower($row['country_name']));
+				echo "\n\t<option value=".$row['country_code'];
+				echo ($row['country_code']==$country_code) ? " selected" : "";
+				echo ">".$country_name."</option>";
+				// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
+			}
+		}
+		echo "
+					</select>
+				</span>";
+		if (isset($country_code)){
+			echo "<span id=\"city\">
+						<select name=\"city\" onChange=\"resultsLoader();form.submit();\">
+							<option value=\"\">All Cities</option>
+							";
+			$cities_q = "SELECT DISTINCT(city),country_code FROM users WHERE country_code='".$country_code."';";
+			$cities_r = mysql_query($cities_q) or die(mysql_error());
+			while($row = mysql_fetch_array($cities_r)) {
+				if($row['city']!=""){
+					$city_disp = ucwords(strtolower($row['city']));
+					echo "\n\t<option value=".urlencode($row['city']);
+					echo ($row['city']==urldecode($city)) ? " selected" : "";
+					echo ">".$city_disp."</option>";
+					// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
+				}
+			}
+			echo "
+						</select>
+					</span>";
+		}
+		echo "<input type=\"hidden\" name=\"p\" value=\"results\">";
+		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
+		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
+		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		echo (isset($pm_raw) && $pm_raw!="") ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
+		echo ($uid) ? "<input type=\"hidden\" name=\"uid\" value=\"".$uid."\">" : "" ;
+		echo ($participate) ? "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">" : "" ;
+		echo ($coaching) ? "<input type=\"hidden\" name=\"coaching\" value=\"".$coaching."\">" : "" ;
 		echo "</form>
 			<div class=\"clearme\"></div>
 		</div>";
 
-		echo "<table class=\"results\" cellspacing=\"0\" cellpadding=\"0\"><tr>";
+		echo "<table class=\"results\" cellspacing=\"0\" cellpadding=\"0\">
+		<thead>
+			<tr style=\"font-weight:bold;\">";
+
 		echo "<td class=\"name\">Name</td>";
+
 		echo "<td>Age</td>";
+
 		echo "<td>Gender
 		<br/><form action=\"index.php\" method=\"get\">
-			<select name=\"gender\" id=\"gender\" onchange=\"form.submit()\"";
+			<select name=\"gender\" id=\"gender\" onchange=\"resultsLoader();form.submit()\"";
 		echo ($uid) ? " disabled" : "" ;
 		echo ">
 				<option value=\"\"";
@@ -244,6 +321,11 @@ else { // Admin screen
 		echo ($pm_raw) ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
 		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
 		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		// echo ($participate) ? "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">" : "" ;
+		echo "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">";
+		echo ($coaching) ? "<input type=\"hidden\" name=\"coaching\" value=\"".$coaching."\">" : "" ;
+		echo ($country_code) ? "<input type=\"hidden\" name=\"country_code\" value=\"".$country_code."\">" : "" ;
+		echo ($city) ? "<input type=\"hidden\" name=\"city\" value=\"".$city."\">" : "" ;
 		if(!empty($conds_raw)){
 			for($i=0; $i < count($conds_raw); $i++){
 				echo "<input type=\"hidden\" name=\"cond[]\" value=\"".$conds_raw[$i]."\">";
@@ -253,10 +335,12 @@ else { // Admin screen
 		</form></td>";
 		
 		echo "</td>";
+
 		echo "<td>Location</td>";
+		
 		echo "<td>Program Method
 		<br/><form action=\"index.php\" method=\"get\">
-			<select name=\"program_method\" id=\"program_method\" onchange=\"form.submit()\"";
+			<select name=\"program_method\" id=\"program_method\" onchange=\"resultsLoader();form.submit()\"";
 		echo ($uid) ? " disabled" : "" ;
 		echo ">
 				<option value=\"\"";
@@ -277,6 +361,10 @@ else { // Admin screen
 		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
 		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
 		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		echo ($participate) ? "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">" : "" ;
+		echo ($coaching) ? "<input type=\"hidden\" name=\"coaching\" value=\"".$coaching."\">" : "" ;
+		echo ($country_code) ? "<input type=\"hidden\" name=\"country_code\" value=\"".$country_code."\">" : "" ;
+		echo ($city) ? "<input type=\"hidden\" name=\"city\" value=\"".$city."\">" : "" ;
 		if(!empty($conds_raw)){
 			for($i=0; $i < count($conds_raw); $i++){
 				echo "<input type=\"hidden\" name=\"cond[]\" value=\"".$conds_raw[$i]."\">";
@@ -284,12 +372,18 @@ else { // Admin screen
 		}
 		echo "</select>
 		</form></td>";
+
 		echo "<td>Start Date</td>";
+
 		echo "<td><a href=\"index.php?p=results&orderby=date&order=";
 		echo ($order=="ASC") ? "DESC" : "ASC" ;
 		echo ($uid) ? "&uid=".$uid : "" ;
 		echo (isset($pm_raw) && $pm_raw!="") ? "&program_method=".$pm_raw : "" ;
 		echo (isset($gender_raw) && $gender_raw!="") ? "&gender=".$gender_raw : "" ;
+		echo (isset($participate)) ? "&participate=".$participate : "" ;
+		echo (isset($coaching)) ? "&coaching=".$coaching : "" ;
+		echo (isset($country_code)) ? "&country_code=".$country_code : "" ;
+		echo (isset($city)) ? "&city=".$city : "" ;
 		if(!empty($conds_raw)){
 			for($i=0; $i < count($conds_raw); $i++){
 				echo "&cond[]=".$conds_raw[$i];
@@ -302,17 +396,91 @@ else { // Admin screen
 			echo "\"></span>";
 		}
 		echo "</a></td>";
+
 		echo "<td>Conditions Recovering From</td>";
+
 		echo "<td>Most Severe Conditon</td>";
+
 		echo "<td>Duration</td>";
-		echo "<td>Participate?</td>";
-		echo "<td>Coaching?</td>";
-		echo "<td style=\"width:150px;\">Summary</td>";
+
+		// echo "<td>Participate?</td>";
+		echo "<td>Participate?
+		<br/><form action=\"index.php\" method=\"get\">
+			<select name=\"participate\" id=\"participate\" onchange=\"resultsLoader();form.submit()\"";
+		echo ($uid) ? " disabled" : "" ;
+		echo ">
+				<option value=\"\"";
+		echo (!isset($participate)) ? " selected" : "" ;
+		echo ">All</option>
+				<option value=\"0\"";
+		echo (isset($participate) && $participate=="0") ? " selected" : "" ;
+		echo ">No</option>
+				<option value=\"1\"";
+		echo (isset($participate) && $participate=="1") ? " selected" : "" ;
+		echo ">Yes</option>";
+				// <option value=\"both\"";
+		// echo (isset($pm_raw) && $pm_raw=="both") ? " selected" : "" ;
+		// echo ">Both</option>
+		echo "
+		<input type=\"hidden\" name=\"p\" value=\"results\">
+			";
+		echo ($pm_raw) ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
+		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
+		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
+		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		echo (isset($coaching)) ? "<input type=\"hidden\" name=\"coaching\" value=\"".$coaching."\">" : "" ;
+		echo ($country_code) ? "<input type=\"hidden\" name=\"country_code\" value=\"".$country_code."\">" : "" ;
+		echo ($city) ? "<input type=\"hidden\" name=\"city\" value=\"".$city."\">" : "" ;
+		if(!empty($conds_raw)){
+			for($i=0; $i < count($conds_raw); $i++){
+				echo "<input type=\"hidden\" name=\"cond[]\" value=\"".$conds_raw[$i]."\">";
+			}
+		}
+		echo "</select>
+		</form></td>";
+
+		// echo "<td>Coaching?</td>";
+		echo "<td>Coaching?
+		<br/><form action=\"index.php\" method=\"get\">
+			<select name=\"coaching\" id=\"coaching\" onchange=\"resultsLoader();form.submit()\"";
+		echo ($uid) ? " disabled" : "" ;
+		echo ">
+				<option value=\"\"";
+		echo (!isset($coaching)) ? " selected" : "" ;
+		echo ">All</option>
+				<option value=\"0\"";
+		echo (isset($coaching) && $coaching=="0") ? " selected" : "" ;
+		echo ">No</option>
+				<option value=\"1\"";
+		echo (isset($coaching) && $coaching=="1") ? " selected" : "" ;
+		echo ">Yes</option>";
+				// <option value=\"both\"";
+		// echo (isset($pm_raw) && $pm_raw=="both") ? " selected" : "" ;
+		// echo ">Both</option>
+		echo "
+		<input type=\"hidden\" name=\"p\" value=\"results\">
+			";
+		echo ($pm_raw) ? "<input type=\"hidden\" name=\"program_method\" value=\"".$pm_raw."\">" : "" ;
+		echo ($gender_raw) ? "<input type=\"hidden\" name=\"gender\" value=\"".$gender_raw."\">" : "" ;
+		echo ($orderby) ? "<input type=\"hidden\" name=\"orderby\" value=\"".$orderby."\">" : "" ;
+		echo ($order) ? "<input type=\"hidden\" name=\"order\" value=\"".$order."\">" : "" ;
+		echo (isset($participate)) ? "<input type=\"hidden\" name=\"participate\" value=\"".$participate."\">" : "" ;
+		echo ($country_code) ? "<input type=\"hidden\" name=\"country_code\" value=\"".$country_code."\">" : "" ;
+		echo ($city) ? "<input type=\"hidden\" name=\"city\" value=\"".$city."\">" : "" ;
+		if(!empty($conds_raw)){
+			for($i=0; $i < count($conds_raw); $i++){
+				echo "<input type=\"hidden\" name=\"cond[]\" value=\"".$conds_raw[$i]."\">";
+			}
+		}
+		echo "</select>
+		</form></td>";
+
+		echo "<td style=\"width:150px;\">Score Summary</td>";
 		// echo "<td>Sec B</td>";
 		// echo "<td>Sec C</td>";
 		// echo "<td>Sec D</td>";
 		echo "<td></td>";
-		echo "</tr>";
+		echo "</tr></thead><tbody>";
 		// var_dump($result);
 		// while($summary = mysql_fetch_array($result)){
 		
@@ -331,7 +499,7 @@ else { // Admin screen
 
 		$n = 0;
 		if(!$result || (mysql_numrows($result) < 1)){
-			echo "<tr class=\"odd\"><td class=\"numrows\" colspan=\"12\">No results</td></tr>";
+			echo "<tr class=\"odd\"><td class=\"numrows\" colspan=\"13\">No results</td></tr>";
 			// die(mysql_error());
 		}
 		while($summary = mysql_fetch_assoc($result)){
@@ -349,7 +517,9 @@ else { // Admin screen
 			echo "\">".$summary['first_name']." ".$summary['last_name']."</a></td>";
 			echo "<td>".$summary['age']."</td>";
 			echo "<td>".$summary['gender']."</td>";
-			echo "<td>".ucwords(strtolower($summary['country_name']))."</td>";
+			echo "<td>";
+			echo ($summary['city']) ? ucwords(strtolower($summary['city'])).", " : "" ;
+			echo ucwords(strtolower($summary['country_name']))."</td>";
 			echo "<td>".$summary['program_method']."</td>";
 			echo "<td>".$summary['program_start_date']."</td>";
 			echo "<td>".$summary['date']."</td>";
@@ -369,9 +539,9 @@ else { // Admin screen
 		}
 		$results_plural = (mysql_num_rows($result)>1) ? "s" : "" ;
 		if (mysql_num_rows($result)!=0){
-			echo "<tr><td class=\"numrows\" colspan=\"12\">".mysql_num_rows($result)." result".$results_plural."</td></tr>";
+			echo "<tr><td class=\"numrows\" colspan=\"14\">".mysql_num_rows($result)." result".$results_plural."</td></tr>";
 		}
-		echo "</table>";
+		echo "</tbody></table>";
 	}
 }
 ?>

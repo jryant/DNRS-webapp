@@ -622,6 +622,11 @@
 					console.log(html);
 				}
 			});
+		}
+
+		function clearCity(){
+			$("#city select").attr("value","");
+		}
 		  // var req = getXMLHTTP();
 		  // if (req)
 		  // {
@@ -640,6 +645,10 @@
 		  //   req.open("GET", strURL, true);
 		  //   req.send(null);
 		  // }
+		
+		function resultsLoader(){
+			// $(".results tbody").css("display","none");
+			$(".results tbody").html("<tr><td colspan=\"13\" style=\"text-align:center;\"><img src=\"img/ajax-loader-lg.gif\"></td></tr>");
 		}
 		
 		function showDatepicker(){

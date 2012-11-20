@@ -440,9 +440,13 @@ function sectionHeading($heading,$page){
 
 function getCountries(){
 	global $conn;
-	$query = "SELECT * FROM countries";
+	// if($admin){
+	// 	$query = "SELECT DISTINCT(country_name),country_code FROM users";
+	// } else {
+		$query = "SELECT * FROM countries";
+	// }
 	$result = mysql_query($query) or die(mysql_error());
-	echo mysql_num_rows($result)." countries found.<br/>";
+	// echo mysql_num_rows($result)." countries found.<br/>";
 	// echo "<select name=\"country\"  onchange=\"getCity(this.value)\">\n\t<option>Select Country</option>";
 	while($row = mysql_fetch_array($result)) {
 		// echo $row['name']."<br/>";
