@@ -6,25 +6,25 @@ $headings = array("a","b","c","d");
 
 if(isset($_GET['a'])){ // Process survey responce
 	$responce = $_POST;
-	
+
 	// print_r($responce); // debug
 	// die();
-		
+
 	if (isset($responce['date'])){
 		$date = $responce['date'];
 		unset($responce['date']);
 	}
-	
+
 	if (isset($responce['gender'])){
 		$gender = $responce['gender'];
 		unset($responce['gender']);
 	}
-	
+
 	if (isset($responce['age'])){
 		$age = $responce['age'];
 		unset($responce['age']);
 	}
-	
+
 	if (isset($responce['country_code'])){
 		$country_code = $responce['country_code'];
 		$country_code = ($country_code == "Select Country" || $country_code == "") ? NULL : $country_code ;
@@ -35,15 +35,15 @@ if(isset($_GET['a'])){ // Process survey responce
 		$country_name = $responce['country_name'];
 		unset($responce['country_name']);
 	}
-	
+
 	if (isset($responce['city'])){
 		$city = $responce['city'];
 		$city = ($city == "Select City" || $city == "") ? NULL : $city ;
 		unset($responce['city']);
 	}
-	
+
 	unset($responce['submit']);
-	
+
 	if(isset($responce['q1'])){
 		$q1 = $responce['q1'];
 		unset($responce['q1']);
@@ -65,12 +65,12 @@ if(isset($_GET['a'])){ // Process survey responce
 	// 	$cond_m[] = (get_magic_quotes_gpc()) ? $responce['cond-m_other'] : addslashes($responce['cond-m_other']) ;
 	// 	unset($responce['cond-m_other']);
 	// }
-	
+
 	if (isset($responce['cond-s']) && $responce['cond-s']!=""){
 		$cond_s = (get_magic_quotes_gpc()) ? $responce['cond-s'] : addslashes($responce['cond-s']) ;
 		unset($responce['cond-s']);
 	}
-	
+
 	if (isset($responce['cond-duration']) && $responce['cond-duration']!=""){
 		$cond_duration = (get_magic_quotes_gpc()) ? $responce['cond-duration'] : addslashes($responce['cond-duration']) ;
 		unset($responce['cond-duration']);
@@ -85,38 +85,38 @@ if(isset($_GET['a'])){ // Process survey responce
 		$referral = (get_magic_quotes_gpc()) ? $responce['referral'] : addslashes($responce['referral']) ;
 		unset($responce['referral']);
 	}
-		
+
 	if(isset($responce['program_method'])){
 		$program_method = $responce['program_method'];
 		unset($responce['program_method']);
 	}
-	
+
 	if (isset($responce['start']) && $responce['start']=="Not Started"){
 		unset($responce['program_start_date']);
 	}	
 	unset($responce['start']);
-		
+
 	if(isset($responce['program_start_date'])){
 		$program_start_date = $responce['program_start_date'];
 		unset($responce['program_start_date']);
 	}
-	
+
 	if(isset($responce['participate'])){
 		$participate = $responce['participate'];
 		unset($responce['participate']);
 	}
-	
+
 	if(isset($responce['coaching'])){
 		$coaching = $responce['coaching'];
 		unset($responce['coaching']);
 	}
-	
+
 	// print_r($responce);
 	// var_dump($country_code);
 	// var_dump($city);
 	// var_dump($program_start_date);
 	// die();
-		
+
 	/* UPDATE USER TABLE */
 	$query = "UPDATE users SET ";	
 	$query .= (isset($program_start_date)) ? "`program_start_date`='$program_start_date', " : "" ;
@@ -141,10 +141,10 @@ if(isset($_GET['a'])){ // Process survey responce
 	$query .= " WHERE ID='{$_SESSION['uid']}'";
 	// echo "<hr/>".$query."<br/>"; die();
 	$result = mysql_query($query) or die("Error updating user table: ".mysql_error());
-	
+
 	/* UPDATE RESPONSES TABLE */	
 	$query = "INSERT INTO responses "; //(uid,date";
-	
+
 	$num_q = array("a"=>"26","b"=>"16","c"=>"13","d"=>"20");
 	foreach($num_q as $key => $value){
 		for($i=0;$i<$value;$i++){
@@ -154,7 +154,7 @@ if(isset($_GET['a'])){ // Process survey responce
 			// $query .= ",".$key.$i;
 		}
 	}
-		
+
 	$query .= "VALUES (";
 	$query .= "'',";
 	$query .= "'".$_SESSION['uid']."'";
@@ -167,7 +167,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	// $query .= (isset($participate)) ? ",'".$participate."'" : ",NULL" ; // participate
 	// $query .= (isset($coaching)) ? ",'".$coaching."'" : ",NULL" ; // coaching
 	$query .= ");";
-	
+
 	// var_dump($query); die();
 	$result = mysql_query($query) or die("Error updating responses table: ".mysql_error());
 
@@ -182,12 +182,12 @@ if(isset($_GET['a'])){ // Process survey responce
 	$uid = $response['uid']; // user ID
 	$date = $response['date']; // surveyed date
 	$sid = $response['ID']; // responses ID
-	
+
 	$sections = array();
 	foreach($headings as $h){
 		$sections[$h] = $num_q[$h] * 4;
 	}
-	
+
 	// $sections = array("a" => 156, "b" => 90, "c" => 78, "d" => 114); // nuke
 	foreach($sections as $section => $max){
 		$total[$section] = 0;
@@ -210,7 +210,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	// var_dump($query); die();
 	$result = mysql_query($query) or die(mysql_error());
 	// print $result;
-	
+
 	/* FINISHED UPDATING TABLES */
 	if($result){
 		echo "<p>Thank you for taking the time to fill out the survey.<br/>Know that your efforts are assisting us in helping others.</p>\n
@@ -238,11 +238,11 @@ else{ // Display survey form
 	if(!$result || (mysql_numrows($result) < 1)){
 		$first_survey = true;
 	}
-	
+
 	$result = mysql_query("SELECT * FROM q3 WHERE QID!='q1'");
 	$page = 1;
 	$pagetot = floor(mysql_num_rows($result)/$qPerPage+2);
-		
+
 	echo "<ul class=\"tabs\">";
 	$pagetot++;
 	for($p=1;$p<=$pagetot;$p++){
@@ -252,14 +252,14 @@ else{ // Display survey form
 
 	// echo "<div class=\"section\">"; // Begin new survey "page"
 	echo "<form action=\"index.php?p=survey&a=submit\" name=\"survey\" method=\"post\">";
-	
-		
+
+
 	if($first_survey){ //Display first survey questions
 		echo "<div class=\"section pre_survey p".$page."\">";
 		showMessageBlock($page);
 		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
 		// echo "<span class=\"heading\">Initial Questions</span>";
-		
+
 		echo "<div class=\"cond\" id=\"cond-m\">
 			<ul>
 				<li>What are the conditions from which you are recovering? <span class=\"ans\"></span></li>
@@ -274,7 +274,7 @@ else{ // Display survey form
 				<li><input onChange=\"checkInput('cond-m');\" type=\"checkbox\" name=\"cond-m[]\" id=\"cond-m_other_chk\" value=\"\" class=\"other\"> Other <input type=\"text\" id=\"cond-m_other\"></li>
 			</ul>
 		</div>\n";
-		
+
 		echo "<div class=\"cond\" id=\"cond-s\">
 			<ul>
 				<li>What is the most severe condition from which you are recovering? <span class=\"ans\"></span></li>
@@ -289,7 +289,7 @@ else{ // Display survey form
 				<li><input onChange=\"checkInput('cond-s');\" type=\"radio\" name=\"cond-s\" id=\"cond-s_other_radio\" class=\"other\"> Other <input type=\"text\" id=\"cond-s_other\" disabled></li>
 			</ul>
 		</div>\n";
-		
+
 		echo "<div id=\"cond-duration\">
 	<ul class=\"pre_survey\">
 		<li>What duration have you had the most severe condition?</li>
@@ -301,7 +301,7 @@ else{ // Display survey form
 	</ul>
 </div>
 ";
-				
+
 		echo "<div id=\"referral\">
 	<ul>
 		<li>How did you hear about the Dynamic Neural Retraining System? <span class=\"ans\"></span></li>
@@ -328,7 +328,7 @@ else{ // Display survey form
 			<li id=\"age\">Age <input onKeyDown=\"checkInput('age');\" name=\"age\" type=\"text\" maxlength=\"3\" size=\"3\" /></li>
 		</ul>
 			";
-		
+
 		echo "<ul class=\"pre_survey\">
 			<div id=\"location\">
 				<label>Where do you currently live?</label><br/>
@@ -343,7 +343,7 @@ else{ // Display survey form
 				</span><span id=\"city\">&nbsp;</span>
 			</div>
 		</ul>";
-				
+
 		echo "<ul class=\"pre_survey\">
 			<li id=\"program_start\">Please select:
 				<ul>
@@ -362,10 +362,10 @@ else{ // Display survey form
 	else { // Display subsequent survey question
 		$result = mysql_query("SELECT * FROM q3 WHERE QID='q1'");
 		$q1 = mysql_fetch_array($result);
-		
+
 		$dresult = mysql_query("SELECT program_start_date FROM users WHERE ID='{$_SESSION['uid']}'");
 		$date = mysql_fetch_array($dresult);
-		
+
 		if(!$date || $date[0]=="0000-00-00"){ // debug for consistency on returning survey?
 			$not_started = "checked";
 			$started = "";
@@ -375,7 +375,7 @@ else{ // Display survey form
 			$started = "checked";
 			$nice_date = $date[0];
 		}
-		
+
 		echo "<div class=\"section follow_up p".$page."\">";
 		showMessageBlock($page);
 		echo "<div class=\"guide\">\n<p class=\"term\">Pre-Survey Questions</p></div>";
@@ -423,24 +423,24 @@ else{ // Display survey form
 			<input onChange=\"checkInput('practicing');\" type=\"radio\" name=\"".$q1[1]."\" value=\"1\" />Yes
 		</p>";*/
 	}
-		
+
 	echo section_navi($page,$pagetot,true,false);
 	echo "</div>\n";
 	$page++;	
 	// End pre-survey questions
-	
+
 	$result = mysql_query("SELECT * FROM q3 WHERE QID!='q1'");
 	// $page = 1;
 	// $pagetot = floor(mysql_num_rows($result)/11-1);
-	
+
 	foreach($headings as $heading){
 		$head = 'heading_'.$heading;
 		$$head = false;
 		// var_dump($$head);
 	}
-	
+
 	while($question = mysql_fetch_array($result)){ // Loop through db for questions	
-		
+
 		foreach($headings as $heading){ // Display section headings
 			$h = 0;
 			$head = 'heading_'.$heading;
@@ -484,7 +484,7 @@ else{ // Display survey form
 		echo "<span class=\"num\">".$q.".</span>\n";
 		echo $question[2]."</span>\n";
 		echo "</div>\n";
-	
+
 		$q++;
 	} // End questions db loop
 	echo section_navi($page,$pagetot,false,true);

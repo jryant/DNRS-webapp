@@ -648,7 +648,7 @@
 		
 		function resultsLoader(){
 			// $(".results tbody").css("display","none");
-			$(".results tbody").html("<tr><td colspan=\"13\" style=\"text-align:center;\"><img src=\"img/ajax-loader-lg.gif\"></td></tr>");
+			// $(".results tbody").html("<tr><td colspan=\"13\" style=\"text-align:center;\"><img src=\"img/ajax-loader-lg.gif\"></td></tr>");
 		}
 		
 		function showDatepicker(){
