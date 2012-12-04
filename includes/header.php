@@ -10,6 +10,7 @@
 	<script src="lib/jquery.validate.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/jquery-ui-1.8.18.custom.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/jquery.numeric.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places" type="text/javascript"></script>
 	<link rel="stylesheet" href="css/styles.css" type="text/css" charset="utf-8" />
 	<!-- <link rel="stylesheet" href="css/date.css" type="text/css"> -->
 	<link rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" type="text/css" charset="utf-8" />
@@ -595,38 +596,51 @@
 			// console.log(email);
 		}
 		
-		function setCountryName(country_code){
-			console.log(country_code);
-			$.ajax({
-				url: "ajax.php",
-				type: "POST",
-				data: "action=findcountry&country_code="+country_code,
-				success: function(html){
-					$("#country_name").attr("value",html);
-					console.log(html+" retrieved from "+country_code);
-				}
-			});	
-		}
+		// function setCountryName(country_code){
+		// 	console.log(country_code);
+		// 	$.ajax({
+		// 		url: "ajax.php",
+		// 		type: "POST",
+		// 		data: "action=findcountry&country_code="+country_code,
+		// 		success: function(html){
+		// 			$("#country_name").attr("value",html);
+		// 			console.log(html+" retrieved from "+country_code);
+		// 		}
+		// 	});	
+		// }
 
-		function getCity(country_code){
-			$("#city").html("<img src=\"img/ajax-loader.gif\">");
-			country_code = country_code.toLowerCase();
-			console.log(country_code);
-			// var strURL="findCity.php?country="+countryId;
-			$.ajax({
-				url: "ajax.php",
-				type: "POST",
-				data: "action=findcity&country_code="+country_code,
-				success: function(html){
-					$("#city").html(html);
-					console.log(html);
-				}
-			});
-		}
+		// function getCity(country_code){
+		// 	$("#city").html("<img src=\"img/ajax-loader.gif\">");
+		// 	country_code = country_code.toLowerCase();
+		// 	console.log(country_code);
+		// 	// var strURL="findCity.php?country="+countryId;
+		// 	$.ajax({
+		// 		url: "ajax.php",
+		// 		type: "POST",
+		// 		data: "action=findcity&country_code="+country_code,
+		// 		success: function(html){
+		// 			$("#city").html(html);
+		// 			console.log(html);
+		// 		}
+		// 	});
+		// }
 
 		function clearCity(){
 			$("#city select").attr("value","");
 		}
+
+		function initialize() {
+			var options = {
+				types: ['(cities)'],
+				componentRestrictions: {country: "ca"}
+			};
+
+			var input = document.getElementById('searchTextField');
+			var autocomplete = new google.maps.places.Autocomplete(input, options);
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+
 		  // var req = getXMLHTTP();
 		  // if (req)
 		  // {

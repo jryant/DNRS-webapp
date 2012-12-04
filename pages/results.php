@@ -404,7 +404,7 @@ else { // Admin screen
 		echo "<td>Duration</td>";
 
 		// echo "<td>Participate?</td>";
-		echo "<td>Participate?
+		echo "<td>Forum
 		<br/><form action=\"index.php\" method=\"get\">
 			<select name=\"participate\" id=\"participate\" onchange=\"resultsLoader();form.submit()\"";
 		echo ($uid) ? " disabled" : "" ;
@@ -440,7 +440,7 @@ else { // Admin screen
 		</form></td>";
 
 		// echo "<td>Coaching?</td>";
-		echo "<td>Coaching?
+		echo "<td>Coaching
 		<br/><form action=\"index.php\" method=\"get\">
 			<select name=\"coaching\" id=\"coaching\" onchange=\"resultsLoader();form.submit()\"";
 		echo ($uid) ? " disabled" : "" ;

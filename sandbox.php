@@ -99,23 +99,33 @@ for($n=0;$n<count($questions);$n++){
 // echo "</ol>";
 */
 
-require_once('globals.php');
-require_once('functions.php');
-db_connect();
-
 global $conn;
 
-			$cities_q = "SELECT DISTINCT(city),country_code FROM users WHERE country_code='US';";
-			$cities_r = mysql_query($cities_q) or die(mysql_error());
-			while($row = mysql_fetch_array($cities_r)) {
-				if($row['city']!=""){
-					$city_disp = ucwords(strtolower($row['city']));
-					echo "<li>".urlencode($row['city'])."</li>";
-					// echo ($row['city']=="SAN FRANSISCO") ? " selected" : "";
-					// echo ">".$city_disp."</option>";
-					// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
-				}
-			}
+// $cities_q = "SELECT DISTINCT(city),country_code FROM users WHERE country_code='US';";
+// $cities_r = mysql_query($cities_q) or die(mysql_error());
+// while($row = mysql_fetch_array($cities_r)) {
+// 	if($row['city']!=""){
+// 		$city_disp = ucwords(strtolower($row['city']));
+// 		echo "<li>".urlencode($row['city'])."</li>";
+// 		// echo ($row['city']=="SAN FRANSISCO") ? " selected" : "";
+// 		// echo ">".$city_disp."</option>";
+// 		// echo "\n<input type=\"hidden\" name=\"country_code\" value=\"".$row['code']."\">";
+// 	}
+// }
+
+$location = "Vancouver, BC, Canada";
+// $location = (get_magic_quotes_gpc()) ? $responce['location'] : addslashes($responce['location']) ;
+$city = strstr($location,",",true);
+$country_name = trim(substr(strrchr($location, ", "), 1));
+// $country_name = trim($country_name);
+$query = "SELECT code FROM countries WHERE name='".$country_name."'";
+$result = mysql_query($query) or die(mysql_error());
+while ($row = mysql_fetch_array($result)){
+	$country_code = $row[0];
+}
+var_dump($city);
+var_dump($country_name);
+var_dump($country_code);
 
 // $str = "('','0020','2012-11-14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 // echo substr_count($str,"'0'");

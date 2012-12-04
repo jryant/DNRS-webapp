@@ -25,21 +25,34 @@ if(isset($_GET['a'])){ // Process survey responce
 		unset($responce['age']);
 	}
 
-	if (isset($responce['country_code'])){
-		$country_code = $responce['country_code'];
-		$country_code = ($country_code == "Select Country" || $country_code == "") ? NULL : $country_code ;
-		unset($responce['country_code']);
-	}
+	// if (isset($responce['country_code'])){
+	// 	$country_code = $responce['country_code'];
+	// 	$country_code = ($country_code == "Select Country" || $country_code == "") ? NULL : $country_code ;
+	// 	unset($responce['country_code']);
+	// }
 
-	if (isset($responce['country_name'])){
-		$country_name = $responce['country_name'];
-		unset($responce['country_name']);
-	}
+	// if (isset($responce['country_name'])){
+	// 	$country_name = $responce['country_name'];
+	// 	unset($responce['country_name']);
+	// }
 
-	if (isset($responce['city'])){
-		$city = $responce['city'];
-		$city = ($city == "Select City" || $city == "") ? NULL : $city ;
-		unset($responce['city']);
+	// if (isset($responce['city'])){
+	// 	$city = $responce['city'];
+	// 	$city = ($city == "Select City" || $city == "") ? NULL : $city ;
+	// 	unset($responce['city']);
+	// }
+
+	if (isset($responce['location'])){
+		$location = $responce['location'];
+		// $location = (get_magic_quotes_gpc()) ? $responce['location'] : addslashes($responce['location']) ;
+		$city = strstr($location,",",true);
+		$country_name = trim(substr(strrchr($location, ", "), 1));
+		$code_query = "SELECT code FROM countries WHERE name='".$country_name."'";
+		$result = mysql_query($code_query) or die("Error updating location info: ".mysql_error());
+		while ($row = mysql_fetch_array($result)){
+			$country_code = $row[0];
+		}
+		unset($responce['location']);
 	}
 
 	unset($responce['submit']);
@@ -112,6 +125,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	}
 
 	// print_r($responce);
+	// var_dump($country_name);
 	// var_dump($country_code);
 	// var_dump($city);
 	// var_dump($program_start_date);
@@ -125,9 +139,9 @@ if(isset($_GET['a'])){ // Process survey responce
 		// $query .= ",`program_start_date`='$program_start_date'";
 		$query .= ",`gender`='$gender'";
 		$query .= ",`age`='$age'";
-		$query .= (isset($country_code)) ? ",`country_code`='$country_code'" : NULL ;
-		$query .= (isset($country_name)) ? ",`country_name`='$country_name'" : NULL ;
-		$query .= (isset($city)) ? ",`city`='$city'" : NULL ;
+		$query .= (isset($country_code)) ? ",`country_code`='$country_code'" : "" ;
+		$query .= (isset($country_name)) ? ",`country_name`='$country_name'" : "" ;
+		$query .= (isset($city)) ? ",`city`='$city'" : "" ;
 		$query .= ",`cond1`='".$cond_ms."'";
 		$query .= ",`cond2`='".$cond_s."'";
 		$query .= ",`cond_duration`='".$cond_duration."'";
@@ -139,7 +153,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	// echo $next_survey;
 	$query .= "`last_survey`='$date',`next_survey`='$next_survey'";
 	$query .= " WHERE ID='{$_SESSION['uid']}'";
-	// echo "<hr/>".$query."<br/>"; die();
+	// echo "<hr/>".$query."<br/>";// die();
 	$result = mysql_query($query) or die("Error updating user table: ".mysql_error());
 
 	/* UPDATE RESPONSES TABLE */	
@@ -168,7 +182,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	// $query .= (isset($coaching)) ? ",'".$coaching."'" : ",NULL" ; // coaching
 	$query .= ");";
 
-	// var_dump($query); die();
+	// var_dump($query);// die();
 	$result = mysql_query($query) or die("Error updating responses table: ".mysql_error());
 
 	/* UPDATE SUMMARY TABLE */
@@ -205,10 +219,10 @@ if(isset($_GET['a'])){ // Process survey responce
 	}
 
 	$query = "INSERT INTO summary SET `uid`='$uid', `date`='$date', `sid`='$sid', `a_raw`='{$total["a"]}', `b_raw`='{$total["b"]}', `c_raw`='{$total["c"]}', `d_raw`='{$total["d"]}', `a_percent`='{$perc["a"]}', `b_percent`='{$perc["b"]}', `c_percent`='{$perc["c"]}', `d_percent`='{$perc["d"]}'";
-	$query .= (isset($participate)) ? ", `participate`='".$participate."'" : ",NULL" ; // participate
-	$query .= (isset($coaching)) ? ", `coaching`='".$coaching."'" : ",NULL" ; // coaching
+	$query .= (isset($participate)) ? ", `participate`='".$participate."'" : "" ; // participate
+	$query .= (isset($coaching)) ? ", `coaching`='".$coaching."'" : "" ; // coaching
 	// var_dump($query); die();
-	$result = mysql_query($query) or die(mysql_error());
+	$result = mysql_query($query) or die("Error updating summary table: ".mysql_error());
 	// print $result;
 
 	/* FINISHED UPDATING TABLES */
@@ -332,15 +346,7 @@ else{ // Display survey form
 		echo "<ul class=\"pre_survey\">
 			<div id=\"location\">
 				<label>Where do you currently live?</label><br/>
-				<span id=\"country\">
-					<select name=\"country_code\" onChange=\"setCountryName(this.value);getCity(this.value)\"> <!-- onChange=\"getCity(this.value)\" -->
-						<option>Select Country</option>
-						";
-						getCountries();
-		echo "
-					</select>
-					<input type=\"hidden\" id=\"country_name\" name=\"country_name\" value=\"\">
-				</span><span id=\"city\">&nbsp;</span>
+				<input id=\"searchTextField\" type=\"text\" name=\"location\" size=\"50\" placeholder=\"Enter a location\" autocomplete=\"on\">
 			</div>
 		</ul>";
 
