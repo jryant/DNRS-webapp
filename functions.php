@@ -9,9 +9,9 @@ $firephp = FirePHP::getInstance(true);
  */
 function db_connect($server="localhost"){
 	global $debug;
-	// $localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"healthsurvey");
 	$localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
 	// $localhost = array('hostname'=>"dnrswebappblc.db.4275239.hostedresource.com",'user'=>"dnrswebappblc",'pass'=>"H3althSurv3y",'db'=>"dnrswebappblc");
+	// $localhost = array('hostname'=>"dnrshealthsurvey.db.8151712.hostedresource.com",'user'=>"dnrshealthsurvey",'pass'=>"H3althSurv3y",'db'=>"dnrshealthsurvey");
 
 	$conn = mysql_connect(${$server}['hostname'],${$server}['user'],${$server}['pass']) or die("Could not connect to MySQL server: ".mysql_error());
 	$db = mysql_select_db(${$server}['db']) or die("Could not connect to MySQL database: ".mysql_error());
@@ -108,7 +108,7 @@ function displayLogin(){
 		<form action="login.php" name="login" method="post">
 			<div class="form-item">
 				<p>Username</p>
-				<input type="text" class="user" name="user" maxlength="30" title="Username" value="test" />
+				<input type="text" class="user" name="user" maxlength="30" title="Username" value="<?php echo (isset($_GET['u'])) ? $_GET['u'] : "" ; ?>" />
 			</div><!-- end form item -->
 			<div class="form-item">
 				<p>Password</p>
@@ -235,6 +235,12 @@ function displayMessages(){
 		if ($msg==9){
 			$output = "<div class=\"msg_success\"><ul><li>Your email address has been confirmed. Please continue with log in.</li></ul></div>";
 		}
+		if ($msg==10){
+			$output = "<div class=\"msg_success\"><ul><li>The account has been relinquished to the user and a welcome email has been sent.</li></ul></div>";
+		}
+		if ($msg=11){
+			$output = "<div class=\"msg_success\"><ul><li>Registration complete! Please log in below with your username and password to access the survey.</li></ul></div>";
+		}
 		echo $output;
 	}
 	else {
@@ -279,9 +285,7 @@ function mailNewUser($username){
 <br/>
 Thank you for purchasing the Dynamic Neural Retraining System&trade; To accurately track your progress we ask that you take a few minutes to fill out the following Wellness Survey so that we have an accurate baseline of your starting point. We will send you a survey once a month so that we can track your progress and celebrate your successes with you. Thank you and we look forward to assisting you in your recovery process.<br/>
 <br/>
-Please click on the link below to activate your account.<br/>
-<br/>
-".$GLOBALS['WEBSITE']."index.php?p=register&conf=".$user['email_key']."&id=".$user['id']."<br/>
+<a href='".$GLOBALS['WEBSITE']."index.php?u=".$username."'>".$GLOBALS['WEBSITE']."index.php?u=".$username."</a><br/>
 <br/>
 Yours in Good Health,<br/>
 The DNRS Team<br/>
@@ -303,9 +307,39 @@ function mailInvite($email){
 
 		$message = "Hello,<br/>
 <br/>
-Welcome to the DNRS On-line Health and Wellness Survey.  We have designed this survey with your recovery in mind and ask that you take the time to fill out the survey so that together we can track and celebrate your successes.  This data is also important for compiling research information and we appreciate your input.   To accurately track your progress we require an accurate baseline of your starting point.  If you have been training for more than one month already, please fill out this initial survey while keeping in mind your state BEFORE you started the DNRS Program.  Please indicate the month and year of your start date.  You will be sent a reminder to fill out the survey once a month during your six month retraining period.  If you are already past your six month retraining period then we will simply send you one follow up survey so that we can track your journey of recovery.  Thank you and we look forward to assisting you in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!<br/>
+Welcome to the DNRS On-line Health and Wellness Survey. We have designed this survey with your recovery in mind. We ask that you kindly take the time to fill out the survey so that together we can track and celebrate your successes.<br />
+<br />This data is also important for compiling research information and we deeply appreciate your input. Please note that your information will be kept confidential.<br />
+<br />You will be sent a reminder to fill out the survey once a month during your six month retraining period. Thank you and we look forward to assisting you in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!<br />
 <br/>
-".$GLOBALS['WEBSITE']."index.php?p=register&email=".$email."<br/>
+<a href='".$GLOBALS['WEBSITE']."index.php?p=register&email=".$email."'>".$GLOBALS['WEBSITE']."index.php?p=register&email=".$email."</a><br/>
+<br/>
+Yours in Good Health,<br/>
+The DNRS Team<br/>
+<br/>
+---<br/>
+This is an automatically-generated message. Please do not reply.";
+
+	return mail($email, $subject, $message, $headers);
+}
+
+function mailRelAccount($user,$email,$pw){
+	$subject = "You're Invited! | Dynamic Neural Retraining System";
+	$headers = "From: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+	    "Reply-To: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+		"Bcc: " . $GLOBALS['EMAIL_BCC'] . "\r\n" .
+		"MIME-Version: 1.0 \r\n" .
+		"Content-Type: text/HTML; charset=utf-8\r\n" .
+	    "X-Mailer: PHP/" . phpversion();
+
+		$message = "Hello,<br/>
+<br/>
+Welcome to the DNRS On-line Health and Wellness Survey. We have designed this survey with your recovery in mind. We ask that you kindly take the time to fill out the survey so that together we can track and celebrate your successes.<br />
+<br />This data is also important for compiling research information and we deeply appreciate your input. Please note that your information will be kept confidential.<br />
+<br />You will be sent a reminder to fill out the survey once a month during your six month retraining period. Thank you and we look forward to assisting you in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!<br />
+<br/>
+Username: ".$user."<br/>
+Password: ".$pw."<br/>
+URL: <a href='".$GLOBALS['WEBSITE']."index.php?u=".$user."'>".$GLOBALS['WEBSITE']."index.php?u=".$user."</a><br/>
 <br/>
 Yours in Good Health,<br/>
 The DNRS Team<br/>
@@ -329,7 +363,7 @@ function mailRemind($id,$first_name,$email){
 <br/>
 It's time to record your progress this month.  Please take a few minutes to complete the Wellness Survey again so that we can accurately record your recovery process.  This data will also assist us with on-going research and development.  We appreciate your dedication and applaud your efforts in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!<br/>
 <br/>
-".$GLOBALS['WEBSITE']."<br/>
+<a href='".$GLOBALS['WEBSITE']."index.php?u=".$user."'>".$GLOBALS['WEBSITE']."index.php?u=".$user."</a><br/>
 <br/>
 Yours in Good Health,<br/>
 The DNRS Team<br/>
@@ -355,7 +389,7 @@ function ekeyConf($id,$conf){
 	$q = "SELECT email_key FROM users WHERE ID = '$id'";
 	$result = mysql_query($q) or die(mysql_error());
 	$user = mysql_fetch_array($result);
-	var_dump($user);
+	// var_dump($user);
 	if ($conf==$user['email_key']){
 		$q = "UPDATE users SET email_conf='1' WHERE ID = '$id'";
 		$result = mysql_query($q) or die(mysql_error());
@@ -370,7 +404,7 @@ function section_navi($page,$pagetot,$first=false,$last=false){
 	$output .= ($first) ? "<span class=\"prev\">&nbsp;</span>" : "<span class=\"prev\"><a href=\"#\"><img src='img/but-go-back.jpg' alt='Go Back' /></a></span>";
 	$output .= "<span class=\"page_count\">Page $page of $pagetot</span>";
 	if ($last){
-		$output .= "<input type=\"hidden\" name=\"date\" value=\"".date("Y-m-d")."\" id=\"date\">";
+		// $output .= "<input type=\"hidden\" name=\"date\" value=\"".date("Y-m-d")."\" id=\"date\">"; // moved to survey if !$one_page
 		$output .= "<input type=\"submit\" name=\"submit\" value=\"Submit\" id=\"submit\">";
 	}
 	else {

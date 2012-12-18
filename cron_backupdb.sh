@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/mysqldump -h dnrshealthsurvey.db.8151712.hostedresource.com -u dnrshealthsurvey -pH3althSurv3y dnrshealthsurvey | gzip > $HOME/html/_db_backups/database_`date '+%m-%d-%Y_%H-%M'`.sql.gz

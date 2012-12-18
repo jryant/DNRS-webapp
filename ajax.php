@@ -85,6 +85,24 @@ switch($action){
 			echo "<img src=\"img/green-checkmark.png\">";
 		}
 		break;
+
+	case 'relinquish':
+		global $conn;
+		$email = $_POST['email'];
+		$username = $_POST['username'];
+
+		// set password
+		$password = $username . rand(100,999);
+		$pw_md5 = md5($password);
+		$result = mysql_query("UPDATE users SET email='$email',password='$pw_md5',managed='0' WHERE username='$username'") or die(mysql_error());
+
+		// email user
+		mailRelAccount($username,$email,$password);
+		
+		// display confirmation
+		echo '10';
+		
+		break;
 		
 	default:
 		echo "no action specified";

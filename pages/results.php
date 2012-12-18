@@ -26,10 +26,10 @@ if($_SESSION['admin']==0){ // User screen
 		while($summary = mysql_fetch_array($result)){
 			echo "<tr>";
 			echo "<td>".$summary['date']."</td>";
-			echo "<td>".$summary['a_raw']." / ".$summary['a_percent']."%</td>";
-			echo "<td>".$summary['b_raw']." / ".$summary['b_percent']."%</td>";
-			echo "<td>".$summary['c_raw']." / ".$summary['c_percent']."%</td>";
-			echo "<td>".$summary['d_raw']." / ".$summary['d_percent']."%</td>";
+			echo "<td>".$summary['a_raw']." &bull; ".$summary['a_percent']."%</td>";
+			echo "<td>".$summary['b_raw']." &bull; ".$summary['b_percent']."%</td>";
+			echo "<td>".$summary['c_raw']." &bull; ".$summary['c_percent']."%</td>";
+			echo "<td>".$summary['d_raw']." &bull; ".$summary['d_percent']."%</td>";
 			echo "</tr>";
 		}
 

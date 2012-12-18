@@ -245,7 +245,9 @@ else{ // Display survey form
 		// echo "<p>Next survey date: ".$result['next_survey']."</p>";
 	}
 
-
+	$one_page = ($result['managed']==0) ? FALSE : TRUE ;
+	$full_name = $result['first_name']." ".$result['last_name'];
+	// var_dump($one_page);
 
 	$first_survey = false;
 	$result = mysql_query("SELECT `date` FROM responses WHERE uid='{$_SESSION['uid']}'");
@@ -257,16 +259,21 @@ else{ // Display survey form
 	$page = 1;
 	$pagetot = floor(mysql_num_rows($result)/$qPerPage+2);
 
-	echo "<ul class=\"tabs\">";
-	$pagetot++;
-	for($p=1;$p<=$pagetot;$p++){
-		echo "<li><a href=\"#\">Page $p</a></li>";
+	if(!$one_page){
+		echo "<ul class=\"tabs\">";
+		$pagetot++;
+		for($p=1;$p<=$pagetot;$p++){
+			echo "<li><a href=\"#\">Page $p</a></li>";
+		}
+		echo "</ul>";
 	}
-	echo "</ul>";
 
 	// echo "<div class=\"section\">"; // Begin new survey "page"
 	echo "<form action=\"index.php?p=survey&a=submit\" name=\"survey\" method=\"post\">";
 
+	if($one_page){
+		echo "<p class='msg_warning'>Manual survey entry for <strong>".$full_name."</strong></p>";
+	}
 
 	if($first_survey){ //Display first survey questions
 		echo "<div class=\"section pre_survey p".$page."\">";
@@ -361,9 +368,14 @@ else{ // Display survey form
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"In Person\" /> In Person
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"DVD\" /> DVD
 				<input onChange=\"checkInput('program_method');\" type=\"radio\" name=\"program_method\" value=\"Both\" /> Both
-			</li>
-			<li>Today's date is ".date('Y-m-d')."</li>
-		</ul>"; 
+			</li>";
+		if($one_page){
+			echo "<li class=\"msg_warning\">Survey date: <input type=\"text\" id=\"date\" name=\"date\" value=\"\" onFocus=\"selectStarted();\"></li>";
+		} else {
+			echo "<li>Today's date is ".date('Y-m-d')."</li>";
+			echo "<input type=\"hidden\" name=\"date\" value=\"".date("Y-m-d")."\">";
+		}
+		echo "</ul>"; 
 	}
 	else { // Display subsequent survey question
 		$result = mysql_query("SELECT * FROM q3 WHERE QID='q1'");
@@ -419,8 +431,13 @@ else{ // Display survey form
 				</span>
 				<span class=\"question\">If you have completed the program, do you book additional coaching sessions for additional clarity and support?</span>
 			</div>
+			";
+
+			if($one_page){
+				echo "<li class=\"msg_warning\">Survey date: <input type=\"text\" id=\"date\" name=\"date\" value=\"\" onFocus=\"selectStarted();\"></li>";
+			}
 			
-			<div class=\"clearme\"></div>
+			echo "<div class=\"clearme\"></div>
 		</ul>";
 
 		/*echo "<p>".$q1[2]."</p>
@@ -430,7 +447,7 @@ else{ // Display survey form
 		</p>";*/
 	}
 
-	echo section_navi($page,$pagetot,true,false);
+	echo ($one_page) ? "" : section_navi($page,$pagetot,true,false);
 	echo "</div>\n";
 	$page++;	
 	// End pre-survey questions
@@ -454,7 +471,7 @@ else{ // Display survey form
 				$q=1;
 				// var_dump($head);
 				if ($head!="heading_a"){ // End the page for all subsequent sections
-					echo section_navi($page,$pagetot,false,false);
+					echo ($one_page) ? "" : section_navi($page,$pagetot,false,false);
 					echo "</div>\n"; // .section
 					$page++;					
 				}
@@ -466,7 +483,7 @@ else{ // Display survey form
 		}
 		// Display each question
 		if($q%($qPerPage+2)==0){ // Determines number of questions (+1) per "page"
-			echo section_navi($page,$pagetot,false,false);
+			echo ($one_page) ? "" : section_navi($page,$pagetot,false,false);
 			$page++;
 			echo "</div>\n<div class=\"section p".$page."\">\n"; // Begin new survey "page"
 			showMessageBlock($page);

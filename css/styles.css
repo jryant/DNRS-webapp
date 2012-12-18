@@ -22,6 +22,7 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 
 #busy, .busy { visibility: hidden; }
 .error { border:1px solid red; }
+label.error { border:none; color:red; margin-left:10px; }
 #survey,
 .hidden { display:none; }
 #survey .error { color: red; border:0; }

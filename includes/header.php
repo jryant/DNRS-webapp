@@ -59,7 +59,9 @@
 			// 	format: 'yyyy-mm-dd'
 			// });
 
-			$("#program_start_date").datepicker({
+			$("#regform").validate();
+
+			$("#program_start_date, #date").datepicker({
 				showOn: "button",
 				buttonImage: "img/redmond/calendar.gif",
 				buttonImageOnly: true,
