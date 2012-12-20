@@ -229,6 +229,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	if($result){
 		echo "<p>Thank you for taking the time to fill out the survey.<br/>Know that your efforts are assisting us in helping others.</p>\n
 		<p>Yours in Good Health,<br/>The DNRS Team</p>";
+		notifyAdmin($_SESSION['uid']);
 	}
 	// var_dump($result); // debug
 }
@@ -510,7 +511,7 @@ else{ // Display survey form
 
 		$q++;
 	} // End questions db loop
-	echo section_navi($page,$pagetot,false,true);
+	echo ($one_page) ? "" : section_navi($page,$pagetot,false,true) ;
 	echo "</form>\n";
 	echo "</div>\n"; // .section
 	echo "</div>\n"; // #survey

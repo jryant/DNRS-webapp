@@ -238,8 +238,8 @@ function displayMessages(){
 		if ($msg==10){
 			$output = "<div class=\"msg_success\"><ul><li>The account has been relinquished to the user and a welcome email has been sent.</li></ul></div>";
 		}
-		if ($msg=11){
-			$output = "<div class=\"msg_success\"><ul><li>Registration complete! Please log in below with your username and password to access the survey.</li></ul></div>";
+		if ($msg==11){
+			$output = "<div class=\"msg_success\"><ul><li>Registration complete!</li></ul></div>";
 		}
 		echo $output;
 	}
@@ -382,6 +382,23 @@ function mailReport($message){
 		"MIME-Version: 1.0 \r\n" .
 		"Content-Type: text/HTML; charset=utf-8\r\n" .
 	    "X-Mailer: PHP/" . phpversion();
+	return mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);	
+}
+function notifyAdmin($id){
+	$result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSION['uid']}'"));
+	$name = $result['first_name']." ".$result['last_name'];
+	$subject = $name." has just completed a Heath Survey | DNRS Web App";
+	$headers = "From: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+	    "Reply-To: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+		// "Bcc: " . $GLOBALS['EMAIL_BCC'] . "\r\n" .
+		"MIME-Version: 1.0 \r\n" .
+		"Content-Type: text/HTML; charset=utf-8\r\n" .
+	    "X-Mailer: PHP/" . phpversion();
+	$message = $name." has just completed a Heath Survey!<br/>
+	<br/>Click <a href='".$GLOBALS['WEBSITE']."index.php?u=admin'>here</a> to log in and view the survey results.<br/>
+	<br/>
+---<br/>
+This is an automatically-generated message. Please do not reply.";
 	return mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);	
 }
 

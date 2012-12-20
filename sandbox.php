@@ -4,10 +4,58 @@ require_once('globals.php');
 require_once('functions.php');
 db_connect();
 
-$result = mysql_query("SELECT * FROM q3 WHERE QID!='q1' ORDER BY 'QID' DESC");
-while($question = mysql_fetch_array($result)){ // Loop through db for questions	
-	echo $question['QID'].". ".$question['question']."<br>";
+$raw = array("Ardis Westgard",
+	"Nancy Lucas",
+	"Tracie Spiess",
+	"Jacquie Shiplack",
+	"Eve Martin Evans",
+	"Shirley Catton",
+	"Karen Braun",
+	"Corinne Siegenthaler",
+	"Valerie Kemp",
+	"Kenneth Lederman",
+	"Sherry Milan",
+	"Annie Friedman",
+	"Michele Sirois",
+	"Beth Caurant",
+	"Katy Archibald",
+	"Barbara Neizo",
+	"Robert Sweet",
+	"Brook Moen",
+	"Pat Parisi",
+	"Eva Mademan",
+	"Mara Vizzutti",
+	"Pat Norton",
+	"Don Nemes",
+	"Denise Miron",
+	"Gordon Winter",
+	"David McNeil",
+	"Julia Maris",
+	"Angela Dunn",
+	"Judy Ollman",
+	"Jennifer Polle",
+	"Annie O'Connor",
+	"Rebecca Hartsfield",
+	"Sherri Connell",
+	"Roberta Godbe-Tipp",
+	"Marlene Anderson");
+
+// echo "<ol>";
+foreach ($raw as $key => $value) {
+	$pos = strpos($value, " ");
+	$firstname = substr($value,0,$pos);
+	$lastname = substr($value,$pos+1);
+	$username = strtolower(substr($value,0,1).$lastname);
+	$username = str_replace(array(" ","'","-"), "", $username);
+	echo $username."<br/>";
+	// echo "<br>INSERT INTO users SET `username`=\"$username\", `first_name`=\"$firstname\", `last_name`=\"$lastname\", `password`=\"5f4dcc3b5aa765d61d8327deb882cf99\", `managed`=\"1\";";
 }
+// echo "</ol>";
+
+// $result = mysql_query("SELECT * FROM q3 WHERE QID!='q1' ORDER BY 'QID' DESC");
+// while($question = mysql_fetch_array($result)){ // Loop through db for questions	
+// 	echo $question['QID'].". ".$question['question']."<br>";
+// }
 
 /*
 $questions = array(
