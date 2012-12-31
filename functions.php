@@ -122,8 +122,21 @@ function displayLogin(){
 				<input name="sublogin" type="submit" class="buttonSubmit" value="Login" /><span id="busy"><img src="img/ajax-loader.gif"/></span>
 			</div><!-- end form item -->
 		</form>
+		<br />
+		<small><a href="#" onClick="forgot_pw();">Forgot password?</a></small>
 		<div id="output"></div>
 	</div>
+	<div id="forgot_pw">
+		<span class="head"><h2>Forgot Password</h2></span>
+		<div class="form-item">
+			<p>Please enter your email address below.</p>
+			<form action="#" method="post">
+				<input type="text" id="forgot_email" name="email" maxlength="30" title="Email Address" />
+				<input type="submit" value="Submit" onClick="forgot_lookup();return false;" /><span id="pw_busy"><img src="img/ajax-loader.gif"/></span>
+			</form>
+		</div><!-- end form item -->
+	</div>
+	<div id="pw_output"></div>
 <?php }
 }
 
@@ -384,6 +397,7 @@ function mailReport($message){
 	    "X-Mailer: PHP/" . phpversion();
 	return mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);	
 }
+
 function notifyAdmin($id){
 	$result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSION['uid']}'"));
 	$name = $result['first_name']." ".$result['last_name'];
@@ -400,6 +414,31 @@ function notifyAdmin($id){
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 	return mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);	
+}
+
+function mailForgotPassword($email,$password){
+	$subject = "Password Reset | Dynamic Neural Retraining System";
+	$headers = "From: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+	    "Reply-To: " . $GLOBALS['EMAIL_SENDER'] . "\r\n" .
+		"Bcc: " . $GLOBALS['EMAIL_BCC'] . "\r\n" .
+		"MIME-Version: 1.0 \r\n" .
+		"Content-Type: text/HTML; charset=utf-8\r\n" .
+	    "X-Mailer: PHP/" . phpversion();
+
+		$message = "Hello,<br/>
+<br/>Please use your new password below to gain access to our online survey to track your recovery process.
+<br/>
+<br/>Password: ".$password."
+<br/>
+<a href='".$GLOBALS['WEBSITE']."index.php'>".$GLOBALS['WEBSITE']."</a><br/>
+<br/>
+Yours in Good Health,<br/>
+The DNRS Team<br/>
+<br/>
+---<br/>
+This is an automatically-generated message. Please do not reply.";
+
+	return mail($email, $subject, $message, $headers);
 }
 
 function ekeyConf($id,$conf){

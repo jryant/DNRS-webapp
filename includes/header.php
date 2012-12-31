@@ -633,8 +633,7 @@
 
 		function initialize() {
 			var options = {
-				types: ['(cities)'],
-				componentRestrictions: {country: "ca"}
+				types: ['(cities)']
 			};
 
 			var input = document.getElementById('searchTextField');
@@ -676,6 +675,30 @@
 			$("#started").attr("checked","checked");
 		}
 		
+		function forgot_pw(){
+			$("#login").slideUp();
+			$("#forgot_pw").slideDown();
+		}
+
+		function forgot_lookup(){
+			// $("#pw_busy").css("visibility","visibility");
+			$('#pw_busy').css("visibility", "visible");
+			var email = $("#forgot_email").val();
+			console.log(email);
+			$.ajax({
+				url: "ajax.php",
+				type: "POST",
+				data: "action=forgot_pw&email="+email,
+				success: function(html){
+					// $("#pw_busy").css("visibility","hidden");
+					$('#pw_busy').css("visibility", "hidden");
+					$('#pw_output').html(html);
+					console.log(html);
+				}
+			});	
+			// $("#pw_output").innerHTML = email;
+		}
+
 	</script>
 </head>
 <body id="body">

@@ -103,6 +103,28 @@ switch($action){
 		echo '10';
 		
 		break;
+
+	case 'forgot_pw':
+		global $conn;
+		$email = $_POST['email'];
+		$query = "SELECT username FROM users WHERE email='$email'";
+		$result = mysql_query($query) or die(mysql_error());
+		while($row = mysql_fetch_array($result)) {
+			$username = strtoupper($row['username']);
+		}
+		if(@$username){
+			$password = strtolower($username . rand(100,999));
+			$pw_md5 = md5($password);
+			$result = mysql_query("UPDATE users SET password='$pw_md5' WHERE username='$username'") or die(mysql_error());
+			
+			mailForgotPassword($email,$password);
+
+			echo "<div class=\"msg_success\"><ul><li>Your password has been reset. Please check your email for further instructions.</li></ul></div>";
+		} else {
+			echo "<div class=\"msg_error\"><ul><li>No user is registered with that email address. Please try again.</li></ul></div>";
+		}
+
+		break;
 		
 	default:
 		echo "no action specified";

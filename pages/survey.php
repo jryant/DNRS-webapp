@@ -45,7 +45,7 @@ if(isset($_GET['a'])){ // Process survey responce
 	if (isset($responce['location'])){
 		$location = $responce['location'];
 		// $location = (get_magic_quotes_gpc()) ? $responce['location'] : addslashes($responce['location']) ;
-		$city = strstr($location,",",true);
+		$city = @strstr($location,",",true);
 		$country_name = trim(substr(strrchr($location, ", "), 1));
 		$code_query = "SELECT code FROM countries WHERE name='".$country_name."'";
 		$result = mysql_query($code_query) or die("Error updating location info: ".mysql_error());
@@ -511,7 +511,7 @@ else{ // Display survey form
 
 		$q++;
 	} // End questions db loop
-	echo ($one_page) ? "" : section_navi($page,$pagetot,false,true) ;
+	echo section_navi($page,$pagetot,false,true);
 	echo "</form>\n";
 	echo "</div>\n"; // .section
 	echo "</div>\n"; // #survey
