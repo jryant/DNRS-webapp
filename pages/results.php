@@ -108,6 +108,7 @@ else { // Admin screen
 		echo "<br/>Program method: <span class=\"response\">".$user['program_method']."</span>";
 		echo "<br/>Date joined: <span class=\"response\">".$user['date_joined']."</span>";
 		echo "<br/>Survey date: <span class=\"response\">".$response['date']."</span>";
+		echo "<br/>Email address: <span class=\"response\">".$user['email']."</span>";
 
 		$q1q = mysql_fetch_array(mysql_query("SELECT question FROM questions WHERE QID='q1'"));
 		$q1r = mysql_fetch_array(mysql_query("SELECT q1 FROM responses WHERE ID='$sid'"));
