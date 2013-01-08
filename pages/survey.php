@@ -47,6 +47,9 @@ if(isset($_GET['a'])){ // Process survey responce
 		// $location = (get_magic_quotes_gpc()) ? $responce['location'] : addslashes($responce['location']) ;
 		$city = @strstr($location,",",true);
 		$country_name = trim(substr(strrchr($location, ", "), 1));
+		if (strlen($country_name)==2){
+			$country_name = "United States";
+		}
 		$code_query = "SELECT code FROM countries WHERE name='".$country_name."'";
 		$result = mysql_query($code_query) or die("Error updating location info: ".mysql_error());
 		while ($row = mysql_fetch_array($result)){
@@ -436,6 +439,8 @@ else{ // Display survey form
 
 			if($one_page){
 				echo "<li class=\"msg_warning\">Survey date: <input type=\"text\" id=\"date\" name=\"date\" value=\"\" onFocus=\"selectStarted();\"></li>";
+			} else {
+				echo "<input type=\"hidden\" name=\"date\" value=\"".date("Y-m-d")."\">";
 			}
 			
 			echo "<div class=\"clearme\"></div>

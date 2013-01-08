@@ -4,7 +4,7 @@ $result = mysql_fetch_array(mysql_query("SELECT * FROM users WHERE ID='{$_SESSIO
 
 echo "<h2>Welcome, ".$result['first_name']."</h2>";
 
-notifyAdmin($_SESSION['uid']);
+// notifyAdmin($_SESSION['uid']);
 
 echo "<p>Welcome to the DNRS On-line Health and Wellness Survey. We have designed this survey with your recovery in mind.  We ask that you kindly take the time to fill out the survey so that together we can track and celebrate your successes.</p>
 
