@@ -306,6 +306,7 @@ The DNRS Team<br/>
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 
+	mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);
 	return mail($user['email'], $subject, $message, $headers);
 }
 
@@ -332,6 +333,7 @@ The DNRS Team<br/>
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 
+	mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);
 	return mail($email, $subject, $message, $headers);
 }
 
@@ -360,6 +362,7 @@ The DNRS Team<br/>
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 
+	mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);
 	return mail($email, $subject, $message, $headers);
 }
 
@@ -376,7 +379,7 @@ function mailRemind($id,$first_name,$email){
 <br/>
 It's time to record your progress this month.  Please take a few minutes to complete the Wellness Survey again so that we can accurately record your recovery process.  This data will also assist us with on-going research and development.  We appreciate your dedication and applaud your efforts in Retraining Your Brain, Transforming Your Health and Reclaiming Your Life!<br/>
 <br/>
-<a href='".$GLOBALS['WEBSITE']."index.php?u=".$user."'>".$GLOBALS['WEBSITE']."index.php?u=".$user."</a><br/>
+<a href='".$GLOBALS['WEBSITE']."index.php'>".$GLOBALS['WEBSITE']."index.php</a><br/>
 <br/>
 Yours in Good Health,<br/>
 The DNRS Team<br/>
@@ -384,6 +387,7 @@ The DNRS Team<br/>
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 
+	mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);
 	return mail($email, $subject, $message, $headers);
 }
 
@@ -438,6 +442,7 @@ The DNRS Team<br/>
 ---<br/>
 This is an automatically-generated message. Please do not reply.";
 
+	mail($GLOBALS['EMAIL_BCC'], $subject, $message, $headers);
 	return mail($email, $subject, $message, $headers);
 }
 

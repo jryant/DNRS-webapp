@@ -20,7 +20,7 @@ body { margin:53px 0 10px 0;background-image:url("http://www.dnrsystem.com/image
 
 #login h2 { display:inline; }
 
-#busy, .busy, #pw_busy { visibility: hidden; }
+#busy, .busy, #pw_busy, #sr_busy { visibility: hidden; }
 .error { border:1px solid red; }
 label.error { border:none; color:red; margin-left:10px; }
 #survey,

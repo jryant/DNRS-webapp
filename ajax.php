@@ -125,6 +125,19 @@ switch($action){
 		}
 
 		break;
+
+	case 'email_reminder':
+		global $conn;
+		$uid = $_POST['uid'];
+		$query = "SELECT first_name,email FROM users WHERE ID='$uid'";
+		$result = mysql_query($query) or die(mysql_error());
+		while($row = mysql_fetch_array($result)) {
+			$first_name = $row['first_name'];
+			$email = $row['email'];
+		}
+		$result = mailRemind($uid,$first_name,$email);
+		echo ($result) ? "Email reminder sent to ".$email."." : "There was an error emailing the reminder to ".$email."." ;
+		break;
 		
 	default:
 		echo "no action specified";

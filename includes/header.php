@@ -699,6 +699,21 @@
 			// $("#pw_output").innerHTML = email;
 		}
 
+		function sendReminder(uid){
+			$('#sr_busy').css("visibility", "visible");
+			console.log(uid);
+			$.ajax({
+				url: "ajax.php",
+				type: "POST",
+				data: "action=email_reminder&uid="+uid,
+				success: function(html){
+					$('#sr_busy').css("visibility", "hidden");
+					// $('#sr_output').html(html);
+					console.log(html);
+				}
+			});	
+		}
+
 	</script>
 </head>
 <body id="body">
