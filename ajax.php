@@ -136,7 +136,7 @@ switch($action){
 			$email = $row['email'];
 		}
 		$result = mailRemind($uid,$first_name,$email);
-		echo ($result) ? "Email reminder sent to ".$email."." : "There was an error emailing the reminder to ".$email."." ;
+		echo $result;
 		break;
 		
 	default:

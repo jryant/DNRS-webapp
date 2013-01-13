@@ -701,14 +701,18 @@
 
 		function sendReminder(uid){
 			$('#sr_busy').css("visibility", "visible");
-			console.log(uid);
+			console.log("UID: "+uid);
 			$.ajax({
 				url: "ajax.php",
 				type: "POST",
 				data: "action=email_reminder&uid="+uid,
 				success: function(html){
 					$('#sr_busy').css("visibility", "hidden");
-					// $('#sr_output').html(html);
+					if(html=="1"){
+						$('#sr_output').html("<img src='img/green-checkmark.png'>");
+					} else {
+						$('#sr_output').html("There was an error sending the email.");
+					}
 					console.log(html);
 				}
 			});	
