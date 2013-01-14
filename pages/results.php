@@ -295,12 +295,12 @@ else { // Admin screen
 			<div class=\"clearme\"></div>
 		</div>";
 
-		if(isset($_GET['uid'])){
-			$uquery = "SELECT first_name,last_name FROM users WHERE ID='{$_GET['uid']}'";
+		if(isset($uid)){
+			$uquery = "SELECT first_name,last_name FROM users WHERE ID='$uid'";
 			$users = mysql_query($uquery) or die(mysql_error());
 			$user = mysql_fetch_array($users);
 			$fullname = $user['first_name']." ".$user['last_name'];
-			echo "<div><h2>Showing all results for ".$fullname."</h2><p><input type='button' value='Send reminder email' onClick='sendReminder(".$_GET['uid'].");'><span id=\"sr_busy\"><img src=\"img/ajax-loader.gif\"/></span><span id='sr_output'></span></p></div>";
+			echo "<div><h2>Showing all results for ".$fullname."</h2><p><input type='button' value='Send reminder email' onClick='sendReminder(\"".$uid."\");'><span id=\"sr_busy\"><img src=\"img/ajax-loader.gif\"/></span><span id='sr_output'></span></p></div>";
 		}
 
 		echo "<table class=\"results\" cellspacing=\"0\" cellpadding=\"0\">
