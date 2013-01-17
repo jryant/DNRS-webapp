@@ -28,6 +28,7 @@
 		</div>";
 	echo ($page=="results" && isset($_SESSION['admin'])) ? "<div id=\"content\" class=\"admin_results\"><div class=\"innercontent\">" : "<div id=\"content\"><div class=\"innercontent\">";
 	displayMessages();
+	echo "<div class=\"msg_warning\" id=\"browser-warning\"><ul><li><strong>Attention!</strong> You are using an unsupported browser! We recommend using Chrome, Firefox, Safari, or Internet Explorer (v. 8 or later). Thank you.</li></ul></div>";
 	if($logged_in){
 		draw_page($page);
 	}

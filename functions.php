@@ -12,6 +12,7 @@ function db_connect($server="localhost"){
 	$localhost = array('hostname'=>"dnrswebapp3.db.4275239.hostedresource.com",'user'=>"dnrswebapp3",'pass'=>"H3althSurv3y",'db'=>"dnrswebapp3");
 	// $localhost = array('hostname'=>"dnrswebappblc.db.4275239.hostedresource.com",'user'=>"dnrswebappblc",'pass'=>"H3althSurv3y",'db'=>"dnrswebappblc");
 	// $localhost = array('hostname'=>"dnrshealthsurvey.db.8151712.hostedresource.com",'user'=>"dnrshealthsurvey",'pass'=>"H3althSurv3y",'db'=>"dnrshealthsurvey");
+	// $localhost = array('hostname'=>"localhost:8889",'user'=>"root",'pass'=>"root",'db'=>"dnrswebapptest");
 
 	$conn = mysql_connect(${$server}['hostname'],${$server}['user'],${$server}['pass']) or die("Could not connect to MySQL server: ".mysql_error());
 	$db = mysql_select_db(${$server}['db']) or die("Could not connect to MySQL database: ".mysql_error());
@@ -131,13 +132,20 @@ function displayLogin(){
 		<div class="form-item">
 			<p>Please enter your email address below.</p>
 			<form action="#" method="post">
-				<input type="text" id="forgot_email" name="email" maxlength="30" title="Email Address" />
+				<input type="text" id="forgot_email" name="email" maxlength="30" value="<?php echo $_GET['email']; ?>" title="Email Address" />
 				<input type="submit" value="Submit" onClick="forgot_lookup();return false;" /><span id="pw_busy"><img src="img/ajax-loader.gif"/></span>
 			</form>
 		</div><!-- end form item -->
 	</div>
 	<div id="pw_output"></div>
 <?php }
+}
+
+function checkEmail($email){
+	global $conn;
+	$q = "SELECT * FROM `users` WHERE `email`='$email'";
+	$result = mysql_query($q) or die("error in checkEmail function (functions.php)");
+	return (mysql_num_rows($result) > 0) ? 0 : 1 ;
 }
 
 function logout(){
@@ -274,8 +282,8 @@ function niceDate($date){
  * into the database. Returns true on success,
  * false otherwise.
  */
-function addNewUser($username, $first_name, $last_name, $email, $password,$date_joined,$ekey){
-	$q = "INSERT INTO users (username, first_name, last_name, email, password, date_joined, email_key) VALUES ('$username', '$first_name', '$last_name', '$email', '$password', '$date_joined', '$ekey')";
+function addNewUser($username, $first_name, $last_name, $email, $password,$date_joined){
+	$q = "INSERT INTO users (username, first_name, last_name, email, password, date_joined) VALUES ('$username', '$first_name', '$last_name', '$email', '$password', '$date_joined')";
 	$result = mysql_query($q) or die(mysql_error());
 	return $result;
 }

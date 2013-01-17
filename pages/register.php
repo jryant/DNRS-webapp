@@ -60,21 +60,27 @@
 		$email = $_POST['email'];
 		$date_joined = date("Y-m-d");
 		$final_remind = date('Y-m-d', strtotime('+180 days'));
-		$ekey = sha1(microtime(true).mt_rand(10000,90000));
-	
-		$result = addNewUser($username,$first_name,$last_name,$email,$password,$date_joined,$ekey);
-		if ($result=="1"){
-			$result = mailNewUser($username);
-			echo "<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=11&u=".$username."\">";
-			// $content = "
-			// <div id=\"register\">
-			// 	<h2>Registration complete!</h2>
-			// 	<p>Please check your inbox for a confirmation email.</p>
-			// </div>";		
-		}
-		else {
-			echo "<div class=\"msg_error\"><ul><li>There was a problem registering your information. Please try again.</li></ul></div>";
+		// $ekey = sha1(microtime(true).mt_rand(10000,90000));
+		
+		$exists = checkEmail($email);
+		if($exists=="0" || $exists==0){
+			echo "<div class=\"msg_error\"><ul><li>That email address is already registered. Would you like to <a href=\"index.php?pw=reset&email=".$email."\">reset your password?</a></li></ul></div>";
 			echo $regform;
+		} else {
+			$result = addNewUser($username,$first_name,$last_name,$email,$password,$date_joined);
+			if ($result=="1"){
+				$result = mailNewUser($username);
+				echo "<meta http-equiv=\"Refresh\" content=\"0;url=index.php?msg=11&u=".$username."\">";
+				// $content = "
+				// <div id=\"register\">
+				// 	<h2>Registration complete!</h2>
+				// 	<p>Please check your inbox for a confirmation email.</p>
+				// </div>";		
+			}
+			else {
+				echo "<div class=\"msg_error\"><ul><li>There was a problem registering your information. Please try again.</li></ul></div>";
+				echo $regform;
+			}
 		}
 	}
 	else {

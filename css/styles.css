@@ -114,3 +114,5 @@ h4 { margin:0; }
 #forgot_pw {
 	display:none;
 }
+
+#browser-warning { display:none; }

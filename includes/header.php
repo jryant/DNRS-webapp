@@ -12,6 +12,12 @@
 	<script src="lib/jquery.numeric.js" type="text/javascript" charset="utf-8"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places" type="text/javascript"></script>
 	<link rel="stylesheet" href="css/styles.css" type="text/css" charset="utf-8" />
+	<!--[if lte IE 7]>
+	<style type=\"text/css\">
+	#browser-warning { display:block; }
+	.section .radios input { margin:0 2px; width:15px; }
+	</style>
+	<![endif]-->
 	<!-- <link rel="stylesheet" href="css/date.css" type="text/css"> -->
 	<link rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" type="text/css" charset="utf-8" />
 	<?php /*
@@ -326,7 +332,7 @@
 			$(inputs).each(function(index){
 				if(inputs[index]=="age"){
 					var age = $("#"+inputs[index]+" input").val();
-					console.log(age);
+					// console.log(age);
 					if(age<1 || age==""){
 						$("#"+inputs[index]).addClass("error");
 						error++;
@@ -531,8 +537,25 @@
 				error = true;
 			}
 			else {
-				msg = "Valid email address."
-				error = false;
+				// $.ajax({
+				// 	url: "ajax.php",
+				// 	type: "POST",
+				// 	data: "action=checkEmail"
+				// 	+"&email="+email,
+				// 	success: function(html){
+				// 		var exists = html;
+				// 		if(exists=="0" || exists==0){
+				// 			msg = "That email address is already registered. Would you like to reset your password?";
+				// 			error = true;
+				// 			$('.email .msg').html(msg);
+				// 			$('.email input').addClass("error");
+				// 		} else {
+							msg = "Valid email address.";
+							error = false;
+				// 		}
+				// 		// console.log(html);
+				// 	}
+				// });
 			}
 			if (error){
 				$('.email input').addClass("error");
@@ -542,6 +565,7 @@
 				$('.email input').removeClass("error");
 				checkEmail = true;
 			}
+			// console.log(checkEmail);
 			$('.email .msg').html(msg);
 		}
 		
@@ -563,27 +587,27 @@
 			}
 		}
 		
-		function register(){
-			var username = $('#username').val();
-			var password = $('#pass_conf').val();
-			var first_name = $('#firstname').val();
-			var last_name = $('#lastname').val();
-			var email = $('#email').val();
-			// console.log("register me!");
-			$.ajax({
-				url: "ajax.php",
-				type: "POST",
-				data: "action=register"
-				+"&username="+username
-				+"&password="+password
-				+"&first_name="+first_name
-				+"&last_name="+last_name
-				+"&email="+email,
-				success: function(html){
-					// console.log(html);
-				}
-			});
-		}
+		// function register(){
+		// 	var username = $('#username').val();
+		// 	var password = $('#pass_conf').val();
+		// 	var first_name = $('#firstname').val();
+		// 	var last_name = $('#lastname').val();
+		// 	var email = $('#email').val();
+		// 	// console.log("register me!");
+		// 	$.ajax({
+		// 		url: "ajax.php",
+		// 		type: "POST",
+		// 		data: "action=register"
+		// 		+"&username="+username
+		// 		+"&password="+password
+		// 		+"&first_name="+first_name
+		// 		+"&last_name="+last_name
+		// 		+"&email="+email,
+		// 		success: function(html){
+		// 			// console.log(html);
+		// 		}
+		// 	});
+		// }
 		
 		function invite(){
 			var email = $("#email").val();
@@ -679,12 +703,20 @@
 			$("#login").slideUp();
 			$("#forgot_pw").slideDown();
 		}
+		<?php
+			if(isset($_GET['pw']) && $_GET['pw']=="reset"){
+				echo '
+				$(document).ready(function(){
+					forgot_pw();
+				});';
+			}
+		?>
 
 		function forgot_lookup(){
 			// $("#pw_busy").css("visibility","visibility");
 			$('#pw_busy').css("visibility", "visible");
 			var email = $("#forgot_email").val();
-			console.log(email);
+			// console.log(email);
 			$.ajax({
 				url: "ajax.php",
 				type: "POST",
@@ -693,7 +725,7 @@
 					// $("#pw_busy").css("visibility","hidden");
 					$('#pw_busy').css("visibility", "hidden");
 					$('#pw_output').html(html);
-					console.log(html);
+					// console.log(html);
 				}
 			});	
 			// $("#pw_output").innerHTML = email;
@@ -701,7 +733,7 @@
 
 		function sendReminder(uid){
 			$('#sr_busy').css("visibility", "visible");
-			console.log("UID: "+uid);
+			// console.log("UID: "+uid);
 			$.ajax({
 				url: "ajax.php",
 				type: "POST",
@@ -713,7 +745,7 @@
 					} else {
 						$('#sr_output').html("There was an error sending the email.");
 					}
-					console.log(html);
+					// console.log(html);
 				}
 			});	
 		}
